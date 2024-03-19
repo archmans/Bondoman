@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Bondoman</string>
+    <string name="loginButton">Login</string>
+    <string name="hint_input_email_address">Input Email Address</string>
+    <string name="hint_input_password">Input Password</string>
 </resources>
