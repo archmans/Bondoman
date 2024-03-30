@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import com.example.bondoman.LoginActivity
+import com.example.bondoman.MainActivity
 import com.example.bondoman.utils.RetrofitInstance
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.CoroutineScope
@@ -21,9 +22,11 @@ class JWTExpiry : Service() {
         return null
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        startJWTExpirationCheck()
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+        val source = intent?.getStringExtra("source") ?: "main"
+        startJWTExpirationCheck(source)
+        return START_STICKY
     }
 
     override fun onDestroy() {
@@ -31,7 +34,7 @@ class JWTExpiry : Service() {
         super.onDestroy()
     }
 
-    private fun startJWTExpirationCheck() {
+    private fun startJWTExpirationCheck(source: String) {
         job = CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
                 val token = getTokenFromSharedPreferences()
@@ -39,11 +42,16 @@ class JWTExpiry : Service() {
                     val response = RetrofitInstance.api.jwt("Bearer $token")
                     if (response.isSuccessful) {
                         val exp = response.body()?.exp
-                        val iat = response.body()?.iat
-                        val timeToExpiry = exp?.minus(iat ?: 0) ?: 0
+                        val currTime = System.currentTimeMillis() / 1000
+                        val timeToExpiry = exp?.minus(currTime) ?: 0
                         Log.d("JWTExpiry", "Hit API, time to expiry: $timeToExpiry")
                         val delay = timeToExpiry * 1000
-                        delay(delay.toLong())
+                        if (source == "splash") {
+                            redirectToMain()
+                            break
+                        } else if (source == "main") {
+                            delay(delay)
+                        }
                     } else {
                         Log.e("JWTExpiry", "JWT API call failed")
                         if (response.code() == 401) {
@@ -64,6 +72,12 @@ class JWTExpiry : Service() {
                 }
             }
         }
+    }
+
+    private fun redirectToMain() {
+        val mainIntent = Intent(this, MainActivity::class.java)
+        mainIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(mainIntent)
     }
 
     private fun getTokenFromSharedPreferences(): String {

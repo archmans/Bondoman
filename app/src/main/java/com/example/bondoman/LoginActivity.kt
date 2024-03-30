@@ -33,6 +33,8 @@ class LoginActivity : AppCompatActivity() {
         buttonLogin.setOnClickListener {
             val email = editTextEmail.text.toString()
             val password = editTextPassword.text.toString()
+//            val email = "13521010@std.stei.itb.ac.id"
+//            val password = "password_13521010"
 
             GlobalScope.launch(Dispatchers.Main) {
                 try {
@@ -40,14 +42,14 @@ class LoginActivity : AppCompatActivity() {
                     Log.d("LoginActivity", "Password: $password")
                     val response = RetrofitInstance.api.login(LoginRequest(email, password))
                     if (response.isSuccessful) {
-                    val token = response.body()?.token
-                    val sharedPreferences = getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
-                    val editor = sharedPreferences.edit()
-                    editor.apply {
-                        putString("TOKEN", token)
-                    }.apply()
-                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                    startActivity(intent)
+                        val token = response.body()?.token
+                        val sharedPreferences = getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
+                        val editor = sharedPreferences.edit()
+                        editor.apply {
+                            putString("TOKEN", token)
+                        }.apply()
+                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        startActivity(intent)
                     } else {
                         val responseError = response.errorBody()?.string()
                         responseError?.let {
