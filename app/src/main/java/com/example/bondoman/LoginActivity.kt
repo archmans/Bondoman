@@ -16,6 +16,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.DelicateCoroutinesApi
 import com.example.bondoman.models.LoginRequest
 import com.example.bondoman.utils.RetrofitInstance
+import org.json.JSONException
+import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
     @SuppressLint("CommitPrefEdits")
@@ -37,22 +39,33 @@ class LoginActivity : AppCompatActivity() {
                     Log.d("LoginActivity", "Email: $email")
                     Log.d("LoginActivity", "Password: $password")
                     val response = RetrofitInstance.api.login(LoginRequest(email, password))
-                    val token = response.token
+                    if (response.isSuccessful) {
+                    val token = response.body()?.token
                     val sharedPreferences = getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
                     val editor = sharedPreferences.edit()
                     editor.apply {
                         putString("TOKEN", token)
                     }.apply()
-                    // print all shared preferences
-                    val all: Map<String, *> = sharedPreferences.all
-                    for ((key, value) in all) {
-                        Log.d("LoginActivity", "$key: $value")
-                    }
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)
-            }   catch (e: Exception) {
-                    Log.e("LoginActivity", "An error occurred: ${e.message}", e)
-                    Toast.makeText(this@LoginActivity, "An error occurred: ${e.message}", Toast.LENGTH_SHORT).show()
+                    } else {
+                        val responseError = response.errorBody()?.string()
+                        responseError?.let {
+                            try {
+                                val jsonObject = JSONObject(it)
+                                val issuesArray = jsonObject.getJSONArray("issues")
+                                if (issuesArray.length() > 0) {
+                                    val errorMessage = issuesArray.getJSONObject(0).getString("message")
+                                    Toast.makeText(this@LoginActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                                }
+                            } catch (e: JSONException) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                }   catch (e: Exception) {
+                    Log.e("LoginActivity", "Error: ${e.message}")
+                    Toast.makeText(this@LoginActivity, "Login failed", Toast.LENGTH_SHORT).show()
                 }
             }
         }
