@@ -27,14 +27,14 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         val buttonLogin = findViewById<Button>(R.id.buttonLogin)
-        val editTextEmail = findViewById<EditText>(R.id.emailAddress)
-        val editTextPassword = findViewById<EditText>(R.id.password)
+//        val editTextEmail = findViewById<EditText>(R.id.emailAddress)
+//        val editTextPassword = findViewById<EditText>(R.id.password)
 
         buttonLogin.setOnClickListener {
-            val email = editTextEmail.text.toString()
-            val password = editTextPassword.text.toString()
-//            val email = "13521010@std.stei.itb.ac.id"
-//            val password = "password_13521010"
+//            val email = editTextEmail.text.toString()
+//            val password = editTextPassword.text.toString()
+            val email = "13521010@std.stei.itb.ac.id"
+            val password = "password_13521010"
 
             GlobalScope.launch(Dispatchers.Main) {
                 try {

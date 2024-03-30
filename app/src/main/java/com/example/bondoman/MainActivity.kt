@@ -13,6 +13,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         service = Intent(this, JWTExpiry::class.java)
         startService(service)
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, LogoutFragment())
+            .commit()
     }
 
     override fun onDestroy() {
