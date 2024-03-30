@@ -14,7 +14,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import java.io.IOException
 class JWTExpiry : Service() {
     private var job: Job? = null
 
@@ -38,15 +37,24 @@ class JWTExpiry : Service() {
                 val token = getTokenFromSharedPreferences()
                 try {
                     val response = RetrofitInstance.api.jwt("Bearer $token")
-                    val timeToExpiry = response.exp - (System.currentTimeMillis() / 1000)
-                    Log.d("JWTExpiry", "Hit API, time to expiry: $timeToExpiry")
-                    delay( timeToExpiry * 1000)
+                    if (response.isSuccessful) {
+                        val exp = response.body()?.exp
+                        val iat = response.body()?.iat
+                        val timeToExpiry = exp?.minus(iat ?: 0) ?: 0
+                        Log.d("JWTExpiry", "Hit API, time to expiry: $timeToExpiry")
+                        val delay = timeToExpiry * 1000
+                        delay(delay.toLong())
+                    } else {
+                        Log.e("JWTExpiry", "JWT API call failed")
+                        if (response.code() == 401) {
+                            val errorMessage = response.errorBody()?.string()
+                            Log.e("JWTExpiry", "Error Message: $errorMessage")
+                        }
+                        redirectToLogin()
+                        break
+                    }
                 } catch (e: HttpException) {
                     Log.e("JWTExpiry", "HTTP Exception: ${e.message()}")
-                    redirectToLogin()
-                    break
-                } catch (e: IOException) {
-                    Log.e("JWTExpiry", "IO Exception: ${e.message}")
                     redirectToLogin()
                     break
                 } catch (e: Throwable) {

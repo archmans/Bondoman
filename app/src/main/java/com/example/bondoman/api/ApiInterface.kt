@@ -13,5 +13,5 @@ interface ApiInterface {
     suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
 
     @POST("/api/auth/token")
-    suspend fun jwt(@Header("Authorization") token: String): JWTResponse
+    suspend fun jwt(@Header("Authorization") token: String): Response<JWTResponse>
 }
