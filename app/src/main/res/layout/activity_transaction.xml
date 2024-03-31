@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/broken_white"
+    tools:context=".TransactionActivity">
+
+    <ImageView
+        android:id="@+id/bg_transaction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bg_transaction"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="700dp"
+        android:layout_gravity="top"
+        android:orientation="vertical"
+        android:paddingTop="?attr/actionBarSize"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <LinearLayout
+            android:layout_width="360dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:background="@drawable/cornered_input"
+            android:orientation="horizontal"
+            android:paddingHorizontal="5dp">
+
+            <LinearLayout
+                android:layout_width="280dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="10dp"
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_search" />
+
+                <EditText
+                    android:id="@+id/searchBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:hint="Search"
+                    android:textColor="@color/broken_white"
+                    android:inputType="textEmailAddress"
+                    android:paddingHorizontal="20dp" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_filter" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/itemTransaction"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="100dp"
+            android:layout_marginHorizontal="20dp"
+            tools:listitem="@layout/list_transaction" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
