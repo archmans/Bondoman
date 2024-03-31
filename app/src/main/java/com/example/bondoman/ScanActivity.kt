@@ -51,77 +51,12 @@ class ScanActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scan)
-        val captureButton = findViewById<ImageButton>(R.id.captureButton)
-        val recaptureButton = findViewById<ImageButton>(R.id.recaptureButton)
-        val galleryButton = findViewById<ImageButton>(R.id.galleryButton)
-        val confirmButton = findViewById<ImageButton>(R.id.confirmButton)
-        if (!hasRequiredPermissions()) {
-            ActivityCompat.requestPermissions(
-                this, CAMERA_PERMISSION, 0
-            )
-        }
+        captureButton = findViewById(R.id.captureButton)
+        recaptureButton = findViewById(R.id.recaptureButton)
+        galleryButton = findViewById(R.id.galleryButton)
+        confirmButton = findViewById(R.id.confirmButton)
+        requestPermissionLauncher.launch(CAMERA_PERMISSION)
 
-        textureView = findViewById(R.id.textureView)
-        cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
-        handlerThread = HandlerThread("videoThread")
-        handlerThread.start()
-        handler = Handler(handlerThread.looper)
-
-        textureView.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
-            override fun onSurfaceTextureAvailable(
-                surface: SurfaceTexture,
-                width: Int,
-                height: Int
-            ) {
-                openCamera()
-            }
-
-            override fun onSurfaceTextureSizeChanged(
-                surface: SurfaceTexture,
-                width: Int,
-                height: Int
-            ) {
-            }
-
-            override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
-
-                return false
-            }
-
-            override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
-            }
-
-        }
-
-        imageReader = ImageReader.newInstance(1080, 1323, ImageFormat.JPEG, 1)
-
-        captureButton.apply {
-            setOnClickListener {
-                captureButton.visibility = View.INVISIBLE
-                galleryButton.visibility = View.INVISIBLE
-                recaptureButton.visibility = View.VISIBLE
-                confirmButton.visibility = View.VISIBLE
-                capReq = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
-                capReq.addTarget(imageReader.surface)
-                cameraCaptureSession.capture(capReq.build(), object : CameraCaptureSession.CaptureCallback() {
-                    override fun onCaptureCompleted(session: CameraCaptureSession, request: CaptureRequest, result: TotalCaptureResult) {
-                        super.onCaptureCompleted(session, request, result)
-                        displayCapturedImage()
-                    }
-                }, null)
-
-            }
-        }
-
-        recaptureButton.apply {
-            setOnClickListener {
-                captureButton.visibility = View.VISIBLE
-                galleryButton.visibility = View.VISIBLE
-                recaptureButton.visibility = View.INVISIBLE
-                confirmButton.visibility = View.INVISIBLE
-                configureCameraPreview()
-            }
-        }
     }
 
     override fun onDestroy() {
@@ -230,67 +165,67 @@ class ScanActivity : ComponentActivity() {
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             permissions.forEach { (_, isGranted) ->
                 if (isGranted) {
-//                    textureView = findViewById(R.id.textureView)
-//                    cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
-//                    handlerThread = HandlerThread("videoThread")
-//                    handlerThread.start()
-//                    handler = Handler(handlerThread.looper)
-//
-//                    textureView.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
-//                        override fun onSurfaceTextureAvailable(
-//                            surface: SurfaceTexture,
-//                            width: Int,
-//                            height: Int
-//                        ) {
-//                            openCamera()
-//                        }
-//
-//                        override fun onSurfaceTextureSizeChanged(
-//                            surface: SurfaceTexture,
-//                            width: Int,
-//                            height: Int
-//                        ) {
-//                        }
-//
-//                        override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
-//
-//                            return false
-//                        }
-//
-//                        override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
-//                        }
-//
-//                    }
-//
-//                    imageReader = ImageReader.newInstance(1080, 1323, ImageFormat.JPEG, 1)
-//
-//                    captureButton.apply {
-//                        setOnClickListener {
-//                            captureButton.visibility = View.INVISIBLE
-//                            galleryButton.visibility = View.INVISIBLE
-//                            recaptureButton.visibility = View.VISIBLE
-//                            confirmButton.visibility = View.VISIBLE
-//                            capReq = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
-//                            capReq.addTarget(imageReader.surface)
-//                            cameraCaptureSession.capture(capReq.build(), object : CameraCaptureSession.CaptureCallback() {
-//                                override fun onCaptureCompleted(session: CameraCaptureSession, request: CaptureRequest, result: TotalCaptureResult) {
-//                                    super.onCaptureCompleted(session, request, result)
-//                                    displayCapturedImage()
-//                                }
-//                            }, null)
-//
-//                        }
-//                    }
-//
-//                    recaptureButton.apply {
-//                        setOnClickListener {
-//                            captureButton.visibility = View.VISIBLE
-//                            galleryButton.visibility = View.VISIBLE
-//                            recaptureButton.visibility = View.INVISIBLE
-//                            confirmButton.visibility = View.INVISIBLE
-//                            configureCameraPreview()
-//                        }
-//                    }
+                    textureView = findViewById(R.id.textureView)
+                    cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+                    handlerThread = HandlerThread("videoThread")
+                    handlerThread.start()
+                    handler = Handler(handlerThread.looper)
+
+                    textureView.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
+                        override fun onSurfaceTextureAvailable(
+                            surface: SurfaceTexture,
+                            width: Int,
+                            height: Int
+                        ) {
+                            openCamera()
+                        }
+
+                        override fun onSurfaceTextureSizeChanged(
+                            surface: SurfaceTexture,
+                            width: Int,
+                            height: Int
+                        ) {
+                        }
+
+                        override fun onSurfaceTextureDestroyed(surface: SurfaceTexture): Boolean {
+
+                            return false
+                        }
+
+                        override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {
+                        }
+
+                    }
+
+                    imageReader = ImageReader.newInstance(1080, 1323, ImageFormat.JPEG, 1)
+
+                    captureButton.apply {
+                        setOnClickListener {
+                            captureButton.visibility = View.INVISIBLE
+                            galleryButton.visibility = View.INVISIBLE
+                            recaptureButton.visibility = View.VISIBLE
+                            confirmButton.visibility = View.VISIBLE
+                            capReq = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
+                            capReq.addTarget(imageReader.surface)
+                            cameraCaptureSession.capture(capReq.build(), object : CameraCaptureSession.CaptureCallback() {
+                                override fun onCaptureCompleted(session: CameraCaptureSession, request: CaptureRequest, result: TotalCaptureResult) {
+                                    super.onCaptureCompleted(session, request, result)
+                                    displayCapturedImage()
+                                }
+                            }, null)
+
+                        }
+                    }
+
+                    recaptureButton.apply {
+                        setOnClickListener {
+                            captureButton.visibility = View.VISIBLE
+                            galleryButton.visibility = View.VISIBLE
+                            recaptureButton.visibility = View.INVISIBLE
+                            confirmButton.visibility = View.INVISIBLE
+                            configureCameraPreview()
+                        }
+                    }
                 } else {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
