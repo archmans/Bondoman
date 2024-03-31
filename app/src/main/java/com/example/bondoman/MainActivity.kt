@@ -19,28 +19,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         service = Intent(this, JWTExpiry::class.java)
         startService(service)
+//        supportFragmentManager.beginTransaction()
+//            .replace(R.id.fragment_container, LogoutFragment())
+//            .commit()
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, LogoutFragment())
-            .commit()
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
         // Get the NavController from the NavHostFragment
         val navController = navHostFragment.navController
 
-        val graphFragment = GraphFragment()
-        val settingFragment = SettingFragment()
-        val transactionFragment = TransactionFragment()
-
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.add(R.id.nav_host_fragment, graphFragment)
-        fragmentTransaction.add(R.id.nav_host_fragment, settingFragment)
-        fragmentTransaction.add(R.id.nav_host_fragment, transactionFragment)
-        fragmentTransaction.commit()
-
         val transactionButton = findViewById<ImageButton>(R.id.transaction_button)
         transactionButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.navbar_transaction_selector))
+        transactionButton.isSelected = true
 
         val graphButton = findViewById<ImageButton>(R.id.graph_button)
         graphButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.navbar_graph_selector))
