@@ -4,4 +4,6 @@
     <string name="hint_input_email_address">Input Email Address</string>
     <string name="hint_input_password">Input Password</string>
     <string name="logout">Logout</string>
+    <string name="transaction_name">Transaction Name</string>
+    <string name="randomize">Randomize</string>
 </resources>

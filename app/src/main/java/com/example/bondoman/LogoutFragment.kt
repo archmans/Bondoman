@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import android.content.Intent
+import android.widget.EditText
+import com.example.bondoman.services.RandomizeTransaction
 
 class LogoutFragment : Fragment() {
 
@@ -18,6 +20,16 @@ class LogoutFragment : Fragment() {
 
         view.findViewById<Button>(R.id.logoutButton).setOnClickListener {
             logout()
+        }
+
+        view.findViewById<Button>(R.id.randomButton).setOnClickListener {
+            val listRandomText = listOf("MacBook Pro", "MacBook Air", "Mac Mini", "Mac Pro", "iMac")
+            val randomText = listRandomText.random()
+
+            val randomizeTransactionIntent = Intent(requireContext(), RandomizeTransaction::class.java)
+            randomizeTransactionIntent.putExtra("transactionName", randomText)
+            randomizeTransactionIntent.setAction("com.example.bondoman.services.RandomizeTransaction")
+            requireContext().sendBroadcast(randomizeTransactionIntent)
         }
         return view
     }
@@ -35,5 +47,9 @@ class LogoutFragment : Fragment() {
         val editor = sharedPreferences.edit()
         editor.clear()
         editor.apply()
+    }
+
+    fun updateEditText(randomText: String?) {
+        view?.findViewById<EditText>(R.id.transactionName)?.setText(randomText)
     }
 }
