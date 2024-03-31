@@ -8,4 +8,9 @@
     <string name="graph_button_description">Grafik</string>
     <string name="setting_button_description">Pengaturan</string>
     <string name="scan_button_description">Pindai</string>
+    <string name="rescan_button_description">Pindai Ulang</string>
+    <string name="image_button_description">Galeri</string>
+    <string name="confirm_button_description">Konfirmasi</string>
+
+
 </resources>

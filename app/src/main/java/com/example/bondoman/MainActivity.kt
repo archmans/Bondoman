@@ -48,6 +48,8 @@ class MainActivity : AppCompatActivity() {
         val settingButton = findViewById<ImageButton>(R.id.setting_button)
         settingButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.navbar_setting_selector))
 
+        val scanButton = findViewById<ImageButton>(R.id.scan_button)
+
         transactionButton.setOnClickListener {
             transactionButton.isSelected = true
             graphButton.isSelected = false
@@ -67,6 +69,11 @@ class MainActivity : AppCompatActivity() {
             graphButton.isSelected = false
             settingButton.isSelected = true
             navController.navigate(R.id.setting_fragment)
+        }
+
+        scanButton.setOnClickListener {
+            val intent = Intent(this, ScanActivity::class.java)
+            startActivity(intent)
         }
 
     }

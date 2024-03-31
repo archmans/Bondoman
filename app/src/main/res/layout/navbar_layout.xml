@@ -82,7 +82,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/scanner_background"
                     android:contentDescription="@string/scan_button_description"
-                    android:src="@drawable/ic_scanner" />
+                    android:src="@drawable/ic_scanner_white" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
