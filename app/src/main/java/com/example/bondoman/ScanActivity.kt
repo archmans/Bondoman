@@ -5,6 +5,7 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
@@ -13,7 +14,10 @@ import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
 import android.hardware.camera2.CaptureRequest
 import android.hardware.camera2.TotalCaptureResult
+import android.hardware.camera2.params.OutputConfiguration
+import android.hardware.camera2.params.SessionConfiguration
 import android.media.ImageReader
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -23,28 +27,26 @@ import android.view.Surface
 import android.view.TextureView
 import android.view.View
 import android.widget.ImageButton
+import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import java.util.concurrent.Executors
 
 class ScanActivity : ComponentActivity() {
-    private var isLivePreview = true
     lateinit var capReq: CaptureRequest.Builder
-    lateinit var handler: Handler
+    private lateinit var handler: Handler
     private lateinit var handlerThread: HandlerThread
     private lateinit var cameraManager: CameraManager
     lateinit var textureView: TextureView
     lateinit var cameraCaptureSession: CameraCaptureSession
     lateinit var cameraDevice: CameraDevice
-    //    lateinit var captureRequest: CaptureRequest
     lateinit var imageReader: ImageReader
 
     private lateinit var captureButton: ImageButton
     private lateinit var recaptureButton: ImageButton
     private lateinit var galleryButton: ImageButton
     private lateinit var confirmButton: ImageButton
-
 
 
 
@@ -64,6 +66,9 @@ class ScanActivity : ComponentActivity() {
         cameraDevice.close()
         handler.removeCallbacksAndMessages(null)
         handlerThread.quitSafely()
+        textureView.surfaceTexture?.release()
+        textureView.surfaceTextureListener = null
+
     }
 
     private fun configureCameraPreview() {
@@ -74,7 +79,12 @@ class ScanActivity : ComponentActivity() {
         capReq = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
         val surface = Surface(textureView.surfaceTexture)
         capReq.addTarget(surface)
-        cameraDevice.createCaptureSession(listOf(surface, imageReader.surface),
+        val outputConfigurationSurface = OutputConfiguration(surface)
+        val outputConfigurationImageReader = OutputConfiguration(imageReader.surface)
+        val sessionConfiguration = SessionConfiguration(
+            SessionConfiguration.SESSION_REGULAR,
+            listOf(outputConfigurationSurface, outputConfigurationImageReader),
+            Executors.newSingleThreadExecutor(),
             object : CameraCaptureSession.StateCallback() {
                 override fun onConfigured(session: CameraCaptureSession) {
                     cameraCaptureSession = session
@@ -82,11 +92,12 @@ class ScanActivity : ComponentActivity() {
                 }
 
                 override fun onConfigureFailed(session: CameraCaptureSession) {
-
+                    // Handle configuration failure
                 }
+            }
+        )
 
-            }, handler)
-        isLivePreview = true
+        cameraDevice.createCaptureSession(sessionConfiguration)
 
     }
 
@@ -117,6 +128,22 @@ class ScanActivity : ComponentActivity() {
         image.close()
     }
 
+    private fun displayUploadedImage(uri: Uri) {
+        captureButton.visibility = View.INVISIBLE
+        galleryButton.visibility = View.INVISIBLE
+        recaptureButton.visibility = View.VISIBLE
+        confirmButton.visibility = View.VISIBLE
+        val imageView = findViewById<ImageView>(R.id.imageView)
+        imageView.setImageURI(uri)
+        imageView.visibility = View.VISIBLE
+        textureView.visibility = View.GONE
+    }
+
+    private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            displayUploadedImage(uri)
+        }
+    }
     private fun openCamera(){
 
         if (ActivityCompat.checkSelfPermission(
@@ -135,7 +162,12 @@ class ScanActivity : ComponentActivity() {
                 capReq = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
                 val surface = Surface(textureView.surfaceTexture)
                 capReq.addTarget(surface)
-                cameraDevice.createCaptureSession(listOf(surface, imageReader.surface),
+                val outputConfigurationSurface = OutputConfiguration(surface)
+                val outputConfigurationImageReader = OutputConfiguration(imageReader.surface)
+                val sessionConfiguration = SessionConfiguration(
+                    SessionConfiguration.SESSION_REGULAR,
+                    listOf(outputConfigurationSurface, outputConfigurationImageReader),
+                    Executors.newSingleThreadExecutor(),
                     object : CameraCaptureSession.StateCallback() {
                         override fun onConfigured(session: CameraCaptureSession) {
                             cameraCaptureSession = session
@@ -143,10 +175,12 @@ class ScanActivity : ComponentActivity() {
                         }
 
                         override fun onConfigureFailed(session: CameraCaptureSession) {
-
+                            // Handle configuration failure
                         }
+                    }
+                )
 
-                    }, handler)
+                cameraDevice.createCaptureSession(sessionConfiguration)
             }
 
             override fun onDisconnected(camera: CameraDevice) {
@@ -199,32 +233,36 @@ class ScanActivity : ComponentActivity() {
 
                     imageReader = ImageReader.newInstance(1080, 1323, ImageFormat.JPEG, 1)
 
-                    captureButton.apply {
-                        setOnClickListener {
-                            captureButton.visibility = View.INVISIBLE
-                            galleryButton.visibility = View.INVISIBLE
-                            recaptureButton.visibility = View.VISIBLE
-                            confirmButton.visibility = View.VISIBLE
-                            capReq = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
-                            capReq.addTarget(imageReader.surface)
-                            cameraCaptureSession.capture(capReq.build(), object : CameraCaptureSession.CaptureCallback() {
-                                override fun onCaptureCompleted(session: CameraCaptureSession, request: CaptureRequest, result: TotalCaptureResult) {
-                                    super.onCaptureCompleted(session, request, result)
-                                    displayCapturedImage()
-                                }
-                            }, null)
-
-                        }
+                    captureButton.setOnClickListener {
+                        captureButton.visibility = View.INVISIBLE
+                        galleryButton.visibility = View.INVISIBLE
+                        recaptureButton.visibility = View.VISIBLE
+                        confirmButton.visibility = View.VISIBLE
+                        capReq = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
+                        capReq.addTarget(imageReader.surface)
+                        cameraCaptureSession.capture(capReq.build(), object : CameraCaptureSession.CaptureCallback() {
+                            override fun onCaptureCompleted(session: CameraCaptureSession, request: CaptureRequest, result: TotalCaptureResult) {
+                                super.onCaptureCompleted(session, request, result)
+                                displayCapturedImage()
+                            }
+                        }, null)
                     }
 
-                    recaptureButton.apply {
-                        setOnClickListener {
-                            captureButton.visibility = View.VISIBLE
-                            galleryButton.visibility = View.VISIBLE
-                            recaptureButton.visibility = View.INVISIBLE
-                            confirmButton.visibility = View.INVISIBLE
-                            configureCameraPreview()
-                        }
+
+                    recaptureButton.setOnClickListener {
+                        captureButton.visibility = View.VISIBLE
+                        galleryButton.visibility = View.VISIBLE
+                        recaptureButton.visibility = View.INVISIBLE
+                        confirmButton.visibility = View.INVISIBLE
+                        textureView.visibility = View.VISIBLE
+                        findViewById<ImageView>(R.id.imageView).visibility = View.GONE
+                        configureCameraPreview()
+                    }
+
+
+                    galleryButton.setOnClickListener {
+                        getContent.launch("image/*")
+
                     }
                 } else {
                     val intent = Intent(this, MainActivity::class.java)
@@ -232,16 +270,6 @@ class ScanActivity : ComponentActivity() {
                 }
             }
         }
-
-
-    private fun hasRequiredPermissions(): Boolean {
-        return CAMERA_PERMISSION.all {
-            ContextCompat.checkSelfPermission(
-                applicationContext,
-                it
-            ) == PackageManager.PERMISSION_GRANTED
-        }
-    }
 
     companion object {
         private val CAMERA_PERMISSION = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
