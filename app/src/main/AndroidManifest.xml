@@ -25,11 +25,11 @@
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".SplashActivity"
+            android:name=".MainActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -43,7 +43,7 @@
             android:screenOrientation="portrait"/>
         <service
             android:name=".services.JWTExpiry"
-            android:enabled="false"
+            android:enabled="true"
             android:exported="false" />
     </application>
 
