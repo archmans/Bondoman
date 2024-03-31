@@ -20,6 +20,7 @@ import android.media.ImageReader
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
@@ -31,6 +32,19 @@ import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import com.example.bondoman.models.ScanRequest
+import com.example.bondoman.utils.RetrofitInstance
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.HttpException
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.util.concurrent.Executors
 
 class ScanActivity : ComponentActivity() {
@@ -48,7 +62,9 @@ class ScanActivity : ComponentActivity() {
     private lateinit var galleryButton: ImageButton
     private lateinit var confirmButton: ImageButton
 
+    private lateinit var imageFile: File
 
+    private var job: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,6 +127,10 @@ class ScanActivity : ComponentActivity() {
         buffer.get(bytes)
         val bitmapImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
 
+        // Save the image as a File
+//        val file = File(getExternalFilesDir(null), "selectedImage.jpg")
+//        file.writeBytes(bytes)
+//        imageFile = file // Assuming imageFile is a class attribute
         // Display the captured image on your TextureView
         runOnUiThread {
             textureView.surfaceTexture?.let { _ ->
@@ -123,7 +143,6 @@ class ScanActivity : ComponentActivity() {
                 }
             }
         }
-
         // Close and release the Image when done
         image.close()
     }
@@ -137,6 +156,15 @@ class ScanActivity : ComponentActivity() {
         imageView.setImageURI(uri)
         imageView.visibility = View.VISIBLE
         textureView.visibility = View.GONE
+
+//        val parcelFileDescriptor = contentResolver.openFileDescriptor(uri, "r")
+//        val fileDescriptor = parcelFileDescriptor?.fileDescriptor
+//        val file = File(cacheDir, "MyImage.jpg")
+//        val inputStream = FileInputStream(fileDescriptor)
+//        val outputStream = FileOutputStream(file)
+//        inputStream.copyTo(outputStream)
+//        imageFile = file // Assuming imageFile is a class attribute
+
     }
 
     private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -262,8 +290,38 @@ class ScanActivity : ComponentActivity() {
 
                     galleryButton.setOnClickListener {
                         getContent.launch("image/*")
-
                     }
+
+                    confirmButton.setOnClickListener {
+                        job = CoroutineScope(Dispatchers.IO).launch {
+                            val sharedPreferences = getSharedPreferences("sharedPrefs", Context.MODE_PRIVATE)
+                            val token = sharedPreferences.getString("TOKEN", "") ?: ""
+                            try {
+                                val requestFile = RequestBody.create(
+                                    MediaType.parse("image/jpg"),
+                                    imageFile
+                                )
+                                val body = MultipartBody.Part.createFormData("file", imageFile.name, requestFile)
+                                val response = RetrofitInstance.api.uploadFile(token, body) // replace "your_token" with the actual token
+                                if (response.isSuccessful) {
+                                    // Get the response body
+                                    val responseBody = response.body()
+
+                                    // Convert the response body to a string and print it
+                                    Log.d(TAG, responseBody.toString())
+                                } else {
+                                    // Handle the error response
+                                    println("Error: ${response.errorBody()?.string()}")
+                                }
+                            }  catch (e: HttpException) {
+                                Log.e(TAG, e.message())
+                            } catch (e: Throwable) {
+                                Log.e(TAG, e.stackTraceToString())
+                            }
+
+                        }
+                    }
+
                 } else {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
@@ -281,6 +339,7 @@ class ScanActivity : ComponentActivity() {
             arrayOf(
                 Manifest.permission.CAMERA,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
                 )
         }
     }
