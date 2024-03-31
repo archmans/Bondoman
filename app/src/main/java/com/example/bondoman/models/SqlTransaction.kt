@@ -1,11 +1,12 @@
-package com.example.bondoman.retrofit.data
+package com.example.bondoman.models
 
 import android.os.Parcel
 import android.os.Parcelable
 
-data class Transaction(val id: Int?,val name: String?, val date: String?, val category: String?, val price: Int?, val location: String?) : Parcelable {
+data class SqlTransaction(var id: Int=0, var name: String? = null, var category: String? =null, var date: String? =null, var price: Int? = null, var location : String? =null) :
+    Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readInt(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
@@ -14,10 +15,10 @@ data class Transaction(val id: Int?,val name: String?, val date: String?, val ca
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeValue(id)
+        parcel.writeInt(id)
         parcel.writeString(name)
-        parcel.writeString(date)
         parcel.writeString(category)
+        parcel.writeString(date)
         parcel.writeValue(price)
         parcel.writeString(location)
     }
@@ -26,15 +27,13 @@ data class Transaction(val id: Int?,val name: String?, val date: String?, val ca
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<Transaction> {
-        override fun createFromParcel(parcel: Parcel): Transaction {
-            return Transaction(parcel)
+    companion object CREATOR : Parcelable.Creator<SqlTransaction> {
+        override fun createFromParcel(parcel: Parcel): SqlTransaction {
+            return SqlTransaction(parcel)
         }
 
-        override fun newArray(size: Int): Array<Transaction?> {
+        override fun newArray(size: Int): Array<SqlTransaction?> {
             return arrayOfNulls(size)
         }
     }
 }
-
-
