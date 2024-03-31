@@ -11,6 +11,8 @@
     <string name="rescan_button_description">Pindai Ulang</string>
     <string name="image_button_description">Galeri</string>
     <string name="confirm_button_description">Konfirmasi</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>
