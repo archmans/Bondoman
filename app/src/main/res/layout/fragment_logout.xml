@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/logout" />
+
+    <EditText
+        android:id="@+id/transactionName"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logoutButton"
+        android:layout_marginTop="20dp"
+        android:autofillHints=""
+        android:hint="@string/transaction_name"
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/randomButton"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="@string/randomize"
+        android:layout_below="@+id/transactionName"
+        android:layout_marginTop="20dp" />
+</RelativeLayout>
