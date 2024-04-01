@@ -1,6 +1,5 @@
 package com.example.bondoman
 
-
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -11,17 +10,16 @@ import android.widget.Toast
 import android.annotation.SuppressLint
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.DelicateCoroutinesApi
 import com.example.bondoman.models.LoginRequest
 import com.example.bondoman.utils.RetrofitInstance
+import kotlinx.coroutines.CoroutineScope
 import org.json.JSONException
 import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
     @SuppressLint("CommitPrefEdits")
-    @OptIn(DelicateCoroutinesApi::class)
+//    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -36,10 +34,8 @@ class LoginActivity : AppCompatActivity() {
             val email = "13521010@std.stei.itb.ac.id"
             val password = "password_13521010"
 
-            GlobalScope.launch(Dispatchers.Main) {
+            CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    Log.d("LoginActivity", "Email: $email")
-                    Log.d("LoginActivity", "Password: $password")
                     val response = RetrofitInstance.api.login(LoginRequest(email, password))
                     if (response.isSuccessful) {
                         val token = response.body()?.token

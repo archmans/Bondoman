@@ -12,8 +12,8 @@
     import com.example.bondoman.R
 
     class RandomizeTransaction : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val randomText = intent.getStringExtra("transactionName")
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val randomText = intent?.getStringExtra("transactionName")
 
             Log.d("BroadcastRandomizeTransaction", "Random text: $randomText")
 

@@ -65,10 +65,6 @@ class JWTExpiry : Service() {
                     Log.e("JWTExpiry", "HTTP Exception: ${e.message()}")
                     redirectToLogin()
                     break
-                } catch (e: Throwable) {
-                    Log.e("JWTExpiry", "Error: ${e.message}")
-                    redirectToLogin()
-                    break
                 }
             }
         }
