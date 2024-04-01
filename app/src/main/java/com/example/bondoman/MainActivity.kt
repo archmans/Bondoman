@@ -5,20 +5,26 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.bondoman.services.JWTExpiry
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class MainActivity : AppCompatActivity() {
     private lateinit var service: Intent
+    private lateinit var networkSensing: NetworkSensing
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         service = Intent(this, JWTExpiry::class.java)
         startService(service)
+        networkSensing = NetworkSensing(this)
 //        supportFragmentManager.beginTransaction()
 //            .replace(R.id.fragment_container, LogoutFragment())
 //            .commit()
@@ -39,6 +45,19 @@ class MainActivity : AppCompatActivity() {
         settingButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.navbar_setting_selector))
 
         val scanButton = findViewById<ImageButton>(R.id.scan_button)
+
+        networkSensing.observe()
+            .onEach { state ->
+                when (state) {
+                    ConnectivityObserver.NetworkState.CONNECTED -> {
+                        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
+                    }
+                    ConnectivityObserver.NetworkState.DISCONNECTED -> {
+                        Toast.makeText(this, "Disconnected", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .launchIn(lifecycleScope)
 
         transactionButton.setOnClickListener {
             transactionButton.isSelected = true

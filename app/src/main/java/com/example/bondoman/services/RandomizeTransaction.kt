@@ -12,10 +12,11 @@
     import com.example.bondoman.R
 
     class RandomizeTransaction : BroadcastReceiver() {
+        private var text: String = ""
         override fun onReceive(context: Context?, intent: Intent?) {
-            val randomText = intent?.getStringExtra("transactionName")
+            text  = intent?.getStringExtra("transactionName").toString()
 
-            Log.d("BroadcastRandomizeTransaction", "Random text: $randomText")
+            Log.d("BroadcastRandomizeTransaction", "Random text: $text")
 
 //            val activity = context as? AppCompatActivity
 //            activity?.runOnUiThread {
