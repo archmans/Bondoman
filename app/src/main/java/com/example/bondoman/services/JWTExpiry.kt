@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import com.example.bondoman.LoginActivity
-import com.example.bondoman.MainActivity
+import com.example.bondoman.TransactionActivity
 import com.example.bondoman.utils.RetrofitInstance
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.CoroutineScope
@@ -47,7 +47,7 @@ class JWTExpiry : Service() {
                         Log.d("JWTExpiry", "Hit API, time to expiry: $timeToExpiry")
                         val delay = timeToExpiry * 1000
                         if (source == "splash") {
-                            redirectToMain()
+                            redirectToTransaction()
                             break
                         } else if (source == "main") {
                             delay(delay)
@@ -70,10 +70,16 @@ class JWTExpiry : Service() {
         }
     }
 
-    private fun redirectToMain() {
-        val mainIntent = Intent(this, MainActivity::class.java)
-        mainIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(mainIntent)
+//    private fun redirectToMain() {
+//        val mainIntent = Intent(this, MainActivity::class.java)
+//        mainIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//        startActivity(mainIntent)
+//    }
+
+    private fun redirectToTransaction() {
+        val transactionIntent = Intent(this, TransactionActivity::class.java)
+        transactionIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(transactionIntent)
     }
 
     private fun getTokenFromSharedPreferences(): String {
