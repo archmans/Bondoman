@@ -9,4 +9,6 @@
     <color name="red">#BA0808</color>
     <color name="grey">#475569</color>
     <color name="light_purple">#9290C3</color>
+    <color name="light_grey">#EAEAEA</color>
+    <color name="text_grey">#475569</color>
 </resources>

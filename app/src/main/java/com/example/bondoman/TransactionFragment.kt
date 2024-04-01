@@ -147,6 +147,7 @@ class TransactionFragment : Fragment() {
 
     fun loadDatas(view: View) {
 
+        insertDummyTransactions()
         val datas = dbTransaction.findAll()
 
         datas.forEach {

@@ -6,7 +6,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import com.example.bondoman.LoginActivity
-import com.example.bondoman.TransactionActivity
+import com.example.bondoman.MainActivity
 import com.example.bondoman.utils.RetrofitInstance
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.CoroutineScope
@@ -77,7 +77,7 @@ class JWTExpiry : Service() {
 //    }
 
     private fun redirectToTransaction() {
-        val transactionIntent = Intent(this, TransactionActivity::class.java)
+        val transactionIntent = Intent(this, MainActivity::class.java)
         transactionIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(transactionIntent)
     }

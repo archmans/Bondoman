@@ -1,7 +1,7 @@
 package com.example.bondoman.helper
 
 import android.content.Context
-import com.example.bondoman.retrofit.data.Transaction
+import com.example.bondoman.models.SqlTransaction
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.File
@@ -10,7 +10,7 @@ import java.io.FileOutputStream
 class Xls {
     companion object {
         // Dummy Transaction class for testing
-        fun saveTransactionSpreadsheet(context: Context, transactionList: List<Transaction>, fileFormat: String): String {
+        fun saveXls(context: Context, transactionList: List<SqlTransaction>, fileFormat: String): String {
             // Create a new XSSFWorkbook or HSSFWorkbook based on the file format
             val workbook = if (fileFormat == "xlsx") XSSFWorkbook() else HSSFWorkbook()
 
