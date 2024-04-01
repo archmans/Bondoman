@@ -17,10 +17,10 @@
 
             Log.d("BroadcastRandomizeTransaction", "Random text: $randomText")
 
-            val activity = context as? AppCompatActivity
-            activity?.runOnUiThread {
-                val fragment = activity.supportFragmentManager.findFragmentById(R.id.fragment_container) as? LogoutFragment
-                fragment?.updateEditText(randomText)
-            }
+//            val activity = context as? AppCompatActivity
+//            activity?.runOnUiThread {
+//                val fragment = activity.supportFragmentManager.findFragmentById(R.id.fragment_container) as? LogoutFragment
+//                fragment?.updateEditText(randomText)
+//            }
         }
     }
