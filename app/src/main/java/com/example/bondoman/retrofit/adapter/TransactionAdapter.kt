@@ -58,7 +58,7 @@ class TransactionAdapter(private val list: ArrayList<TransactionEntity>): Recycl
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.row_data,parent,false)
+        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.row_data, parent, false)
         return ViewHolder(view)
     }
 
