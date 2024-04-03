@@ -3,7 +3,6 @@ package com.example.bondoman
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -11,9 +10,10 @@ import androidx.lifecycle.lifecycleScope
 import com.example.bondoman.services.JWTExpiry
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupActionBarWithNavController
+import com.example.bondoman.services.ConnectivityObserver
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import com.example.bondoman.services.NetworkSensing
 
 class MainActivity : AppCompatActivity() {
     private lateinit var service: Intent
@@ -25,13 +25,9 @@ class MainActivity : AppCompatActivity() {
         service = Intent(this, JWTExpiry::class.java)
         startService(service)
         networkSensing = NetworkSensing(this)
-//        supportFragmentManager.beginTransaction()
-//            .replace(R.id.fragment_container, LogoutFragment())
-//            .commit()
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
 
-        // Get the NavController from the NavHostFragment
         val navController = navHostFragment.navController
 
         val transactionButton = findViewById<ImageButton>(R.id.transaction_button)
@@ -45,19 +41,6 @@ class MainActivity : AppCompatActivity() {
         settingButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.navbar_setting_selector))
 
         val scanButton = findViewById<ImageButton>(R.id.scan_button)
-
-        networkSensing.observe()
-            .onEach { state ->
-                when (state) {
-                    ConnectivityObserver.NetworkState.CONNECTED -> {
-                        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
-                    }
-                    ConnectivityObserver.NetworkState.DISCONNECTED -> {
-                        Toast.makeText(this, "Disconnected", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-            .launchIn(lifecycleScope)
 
         transactionButton.setOnClickListener {
             transactionButton.isSelected = true
@@ -84,6 +67,19 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ScanActivity::class.java)
             startActivity(intent)
         }
+
+        networkSensing.observe()
+            .onEach { state ->
+                when (state) {
+                    ConnectivityObserver.NetworkState.CONNECTED -> {
+                        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
+                    }
+                    ConnectivityObserver.NetworkState.DISCONNECTED -> {
+                        Toast.makeText(this, "Disconnected", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .launchIn(lifecycleScope)
 
     }
     override fun onSupportNavigateUp(): Boolean {

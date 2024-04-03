@@ -1,9 +1,9 @@
-package com.example.bondoman
+package com.example.bondoman.services
 
 import android.content.Context
 import android.net.ConnectivityManager
 import kotlinx.coroutines.flow.Flow
-import com.example.bondoman.ConnectivityObserver.NetworkState
+import com.example.bondoman.services.ConnectivityObserver.NetworkState
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
