@@ -8,22 +8,23 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.bondoman.ContainerActivity
 import com.example.bondoman.R
 import com.example.bondoman.retrofit.data.entity.TransactionEntity
 
-class TransactionAdapter(private val listData: ArrayList<TransactionEntity>): RecyclerView.Adapter<TransactionAdapter.ViewHolder>(){
+class TransactionAdapter(private val list: ArrayList<TransactionEntity>): RecyclerView.Adapter<TransactionAdapter.ViewHolder>(){
 
-    override fun onBindViewHolder(holder: com.example.bondoman.TransactionAdapter.DataViewHolder, position: Int) {
-        val currentData = listData[position]
-        holder.txtName.text = currentData.name
-        holder.txtCategory.text = currentData.category.toString()
-        val temp = "IDR " + currentData.price.toString()
-        holder.txtPrice.text = temp
-        holder.txtLocation.text = currentData.location
-        holder.txtDate.text = currentData.date
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val currentData = list[position]
+        holder.name.text = currentData.name
+        holder.kategori.text = currentData.category.toString()
+        val tmp = "IDR " + currentData.price.toString()
+        holder.nominal.text = tmp
+        holder.lokasi.text = currentData.location
+        holder.tgl.text = currentData.date
 
         // Set click listener for itemLocation TextView
-        holder.txtLocation.setOnClickListener {
+        holder.lokasi.setOnClickListener {
             val context = holder.itemView.context
             // Check if the location is not "Unknown" and not empty before opening Google Maps
             if (currentData.location != null && currentData.location != "Unknown" && currentData.location!!.isNotBlank()) {
@@ -46,7 +47,7 @@ class TransactionAdapter(private val listData: ArrayList<TransactionEntity>): Re
             val toastMessage = "Clicked item: ${currentData.name} with id ${currentData.id}"
             Toast.makeText(holder.itemView.context, toastMessage, Toast.LENGTH_SHORT).show()
 
-            val intent = Intent(holder.itemView.context, AddTransactionActivity::class.java)
+            val intent = Intent(holder.itemView.context, ContainerActivity::class.java)
 
             // Optionally, pass data to the AddTransactionActivity
             intent.putExtra("transactionId", currentData.id)
@@ -56,23 +57,19 @@ class TransactionAdapter(private val listData: ArrayList<TransactionEntity>): Re
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): com.example.bondoman.TransactionAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.row_data,parent,false)
-        return com.example.bondoman.TransactionAdapter.ViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        return ViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        return listData.count()
+        return list.count()
     }
     class ViewHolder(item: View) : RecyclerView.ViewHolder(item) {
-        val txtName: TextView = item.findViewById(R.id.itemName)
-        val txtCategory:TextView= item.findViewById(R.id.category)
-        val txtDate: TextView= item.findViewById(R.id.itemDate)
-        val txtPrice : TextView= item.findViewById(R.id.itemPrice)
-        val txtLocation : TextView = item.findViewById(R.id.itemLocation)
+        val name: TextView = item.findViewById(R.id.NamaTransaksi)
+        val kategori:TextView= item.findViewById(R.id.KategoriTransaksi)
+        val tgl: TextView= item.findViewById(R.id.TanggalTransaksi)
+        val nominal : TextView= item.findViewById(R.id.NominalTransaksi)
+        val lokasi : TextView = item.findViewById(R.id.LokasiTransaksi)
     }
 }
