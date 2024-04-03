@@ -13,13 +13,13 @@ class ContainerActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             // Check if intent contains transaction ID
-            val transactionId = intent.getIntExtra("transactionId", -1)
+            val transactionId = intent.getIntExtra("id", -1)
             if (transactionId != -1) {
-                // Start the EditTransactionFragment
-//                val fragment = EditTransactionFragment.newInstance(transactionId)
-//                supportFragmentManager.beginTransaction()
-//                    .replace(R.id.fragment_container, fragment)
-//                    .commit()
+//                 Start the EditTransactionFragment
+                val fragment = EditTransactionFragment.newInstance(transactionId)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit()
             } else {
                 // Start the AddTransactionFragment
                 supportFragmentManager.beginTransaction()
