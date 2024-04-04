@@ -12,9 +12,9 @@ enum class Category {
 @Entity
 data class TransactionEntity(
     @PrimaryKey(autoGenerate = true) var id: Int? = null,
-    @ColumnInfo(name = "name") var name: String? = null,
-    @ColumnInfo(name = "category") var category: Category? = null,
-    @ColumnInfo(name = "date") var date: String? = null,
-    @ColumnInfo(name = "price") var price: Int? = null,
-    @ColumnInfo(name = "location") var location: String? = null
+    @ColumnInfo(name = "nama_transaksi") var name: String? = null,
+    @ColumnInfo(name = "kategori_transaksi") var category: Category? = null,
+    @ColumnInfo(name = "tanggal_transaksi") var date: String? = null,
+    @ColumnInfo(name = "nominal_transaksi") var price: Int? = null,
+    @ColumnInfo(name = "lokasi_transaksi") var location: String? = null
 )

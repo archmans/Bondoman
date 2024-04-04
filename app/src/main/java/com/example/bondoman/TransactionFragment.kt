@@ -122,13 +122,6 @@ class TransactionFragment : Fragment() {
 
         listTransaction.addAll(database.transactionDao().getAll())
         adapter.notifyDataSetChanged()
-    }
-
-    private fun loadDatas() {
-        listTransaction.clear()
-
-        listTransaction.addAll(database.transactionDao().getAll())
-        adapter.notifyDataSetChanged()
 
 //        val datas = dbTransaction.findAll()
 //
