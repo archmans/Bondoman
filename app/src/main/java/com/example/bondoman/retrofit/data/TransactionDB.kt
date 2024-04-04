@@ -7,7 +7,11 @@ import androidx.room.RoomDatabase
 import com.example.bondoman.retrofit.data.dao.TransactionDao
 import com.example.bondoman.retrofit.data.entity.TransactionEntity
 
+<<<<<<< app/src/main/java/com/example/bondoman/retrofit/data/TransactionDB.kt
 @Database(entities = [TransactionEntity::class], version = 2)
+=======
+@Database(entities = [TransactionEntity::class], version = 1)
+>>>>>>> app/src/main/java/com/example/bondoman/retrofit/data/TransactionDB.kt
 abstract class TransactionDB : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao
 

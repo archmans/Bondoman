@@ -9,9 +9,6 @@ import com.example.bondoman.retrofit.data.entity.TransactionEntity
 
 @Dao
 interface TransactionDao {
-
-
-
     @Query("SELECT * FROM transactionentity")
     fun getAll(): List<TransactionEntity>
 

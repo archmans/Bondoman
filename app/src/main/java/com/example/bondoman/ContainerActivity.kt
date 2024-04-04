@@ -20,6 +20,7 @@ class ContainerActivity : AppCompatActivity() {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .commit()
+
             } else {
                 // Start the AddTransactionFragment
                 supportFragmentManager.beginTransaction()
