@@ -13,15 +13,11 @@ import android.location.Geocoder
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.example.bondoman.retrofit.data.TransactionDB
-import com.example.bondoman.retrofit.data.entity.Category
-import com.example.bondoman.retrofit.data.entity.TransactionEntity
-import java.util.Date
 import java.util.Locale
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.core.app.ActivityCompat
-import java.text.SimpleDateFormat
+import androidx.lifecycle.ViewModelProvider
 
 
 class AddTransactionFragment : Fragment() {
@@ -30,7 +26,7 @@ class AddTransactionFragment : Fragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var address : String? = null
     private var isFetched : Boolean = false
-    private lateinit var db: TransactionDB
+    private lateinit var db: DBViewModel
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
@@ -39,7 +35,7 @@ class AddTransactionFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentAddTransactionBinding.inflate(inflater, container, false)
         geocoder = Geocoder(requireContext(), Locale.getDefault())
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -48,7 +44,7 @@ class AddTransactionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        db = TransactionDB.getInstance(requireContext())
+        db = ViewModelProvider(requireActivity())[DBViewModel::class.java]
 
         val categorySpinner: Spinner = binding.addCategoryField
         val categories = resources.getStringArray(R.array.category_array)
@@ -77,7 +73,6 @@ class AddTransactionFragment : Fragment() {
             // Retrieve values from other fields
             val name = binding.addNameField.text.toString()
             val amountText = binding.addPriceField.text.toString()
-            val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
             // Retrieve selected category from the Spinner
             val category = categorySpinner.selectedItem.toString()
 
@@ -94,21 +89,14 @@ class AddTransactionFragment : Fragment() {
 
 
             val location = if (address != null) {
-                address
+                address!!
             } else {
                 binding.addLocationField.text.toString()
             }
 
             Log.d("addTransactionWoi", "the location is $location")
 
-            val newTransaction = TransactionEntity(
-                name = name,
-                category = Category.valueOf(category),
-                date = currentDate,
-                price = amount,
-                location = location ?: ""
-            )
-            db.transactionDao().insertAll(newTransaction)
+            db.addTransaksi(name, category, amount, location)
             requireActivity().onBackPressed()
         }
 
