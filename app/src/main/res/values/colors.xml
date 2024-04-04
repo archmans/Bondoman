@@ -3,4 +3,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="splash_screen_background">#FF000000</color>
+    <color name="dark_grey">#1A1C21</color>
+    <color name="broken_white">#E9EAEC</color>
+    <color name="purple">#5852EE</color>
+    <color name="red">#BA0808</color>
+    <color name="grey">#475569</color>
+    <color name="light_purple">#9290C3</color>
+    <color name="light_grey">#EAEAEA</color>
+    <color name="text_grey">#475569</color>
 </resources>

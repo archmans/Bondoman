@@ -50,6 +50,7 @@ class LoginActivity : AppCompatActivity() {
                         }.apply()
                         val intent = Intent(this@LoginActivity, MainActivity::class.java)
                         startActivity(intent)
+                        finish()
                     } else {
                         val responseError = response.errorBody()?.string()
                         responseError?.let {
