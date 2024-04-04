@@ -14,4 +14,13 @@
     <string name="image_button_description">Galeri</string>
     <string name="confirm_button_description">Konfirmasi</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="category_array">
+        <item>Pemasukan</item>
+        <item>Pengeluaran</item>
+    </string-array>
+    <string name="back_button_description">Kembali</string>
+    <string name="selected_image_description">Gambar Terpilih</string>
+    <string name="scan_fragment_title">Scan Nota</string>
+
+
 </resources>
