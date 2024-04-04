@@ -11,4 +11,7 @@
     <color name="light_purple">#9290C3</color>
     <color name="light_grey">#EAEAEA</color>
     <color name="text_grey">#475569</color>
+    <color name="colorIncome">#1B1A55</color>
+    <color name="colorOutcome">#9290C3</color>
+    <color name="text_graph">#5852EE</color>
 </resources>

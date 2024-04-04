@@ -15,28 +15,42 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import com.example.bondoman.services.JWTExpiry    
+import android.widget.ImageButton
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.bondoman.services.JWTExpiry
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import com.example.bondoman.services.ConnectivityObserver
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import com.example.bondoman.services.NetworkSensing
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var service: Intent
+    private lateinit var networkSensing: NetworkSensing
     private lateinit var service: Intent
     private lateinit var transactionButton: ImageButton
     private lateinit var graphButton: ImageButton
     private lateinit var settingButton: ImageButton
     private lateinit var scanButton: ImageButton
     private lateinit var navController: NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         service = Intent(this, JWTExpiry::class.java)
         startService(service)
-//        supportFragmentManager.beginTransaction()
-//            .replace(R.id.fragment_container, LogoutFragment())
-//            .commit()
+        networkSensing = NetworkSensing(this)
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val toolbarButton = findViewById<ImageButton>(R.id.toolbar_back_button)
         navController = navHostFragment.navController
         val fragmentManager: FragmentManager = supportFragmentManager
+
+        val navController = navHostFragment.navController
 
         transactionButton = findViewById(R.id.transaction_button)
         transactionButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.navbar_transaction_selector))
@@ -84,6 +98,19 @@ class MainActivity : AppCompatActivity() {
                 navbar.visibility = View.VISIBLE
             }
         }
+        networkSensing.observe()
+            .onEach { state ->
+                when (state) {
+                    ConnectivityObserver.NetworkState.CONNECTED -> {
+                        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
+                    }
+                    ConnectivityObserver.NetworkState.DISCONNECTED -> {
+                        Toast.makeText(this, "Disconnected", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            .launchIn(lifecycleScope)
+
     }
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)

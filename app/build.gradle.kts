@@ -66,4 +66,6 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
 
+    // graph
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }
