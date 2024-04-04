@@ -38,9 +38,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ScanActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"/>
         <service
             android:name=".services.JWTExpiry"
             android:enabled="true"
