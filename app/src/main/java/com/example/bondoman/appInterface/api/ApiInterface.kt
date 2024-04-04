@@ -1,4 +1,4 @@
-package com.example.bondoman.api
+package com.example.bondoman.appInterface.api
 
 import com.example.bondoman.models.LoginRequest
 import com.example.bondoman.models.LoginResponse

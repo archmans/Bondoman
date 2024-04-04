@@ -39,6 +39,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.bondoman.utils.RetrofitInstance
 import kotlinx.coroutines.CoroutineScope
@@ -69,7 +70,7 @@ class ScanFragment : Fragment() {
     private lateinit var recaptureButton: ImageButton
     private lateinit var galleryButton: ImageButton
     private lateinit var confirmButton: ImageButton
-
+    private lateinit var db: DBViewModel
 
     private lateinit var imageFile: File
 
@@ -86,16 +87,19 @@ class ScanFragment : Fragment() {
         galleryButton = view.findViewById(R.id.galleryButton)
         confirmButton = view.findViewById(R.id.confirmButton)
 
+        db = ViewModelProvider(requireActivity())[DBViewModel::class.java]
+
         val navbar = requireActivity().findViewById<LinearLayout>(R.id.navbar_main)
         val toolbar = requireActivity().findViewById<RelativeLayout>(R.id.toolbar)
+        toolbar.setBackgroundColor(Color.parseColor("#1B1A55"))
+        navbar.setBackgroundResource(R.drawable.navbar_bordered_background)
         val textView = toolbar.findViewById<TextView>(R.id.toolbar_text)
         val transactionButton = requireActivity().findViewById<ImageButton>(R.id.transaction_button)
         val graphButton = requireActivity().findViewById<ImageButton>(R.id.graph_button)
         val settingButton = requireActivity().findViewById<ImageButton>(R.id.setting_button)
-        toolbar.setBackgroundColor(Color.parseColor("#1B1A55"))
-        navbar.setBackgroundResource(R.drawable.navbar_bordered_background)
-
         textView.text = "Scan Nota"
+        textView.setTextColor(Color.WHITE)
+        toolbar.findViewById<ImageButton>(R.id.toolbar_back_button).setImageResource(R.drawable.ic_arrow_left_white)
         transactionButton.isSelected = false
         graphButton.isSelected = false
         settingButton.isSelected = false
@@ -371,6 +375,7 @@ class ScanFragment : Fragment() {
                     }
 
                     confirmButton.setOnClickListener {
+                        println("UDAH DIKLIK")
                         job = CoroutineScope(Dispatchers.IO).launch {
                             val sharedPreferences =
                                 requireActivity().getSharedPreferences(
@@ -393,10 +398,13 @@ class ScanFragment : Fragment() {
                                 println("Bearer $token")
                                 if (response.isSuccessful) {
                                     val responseBody = response.body()
-                                    println(responseBody)
+                                    val items = responseBody?.items
+                                    items?.items?.forEach {
+                                        db.addTransaksi(it.name, "Pengeluaran", it.qty*it.price, "Unknown")
+                                    }
                                     createPopUp(
                                         "Berhasil",
-                                        "Transaksi berhasil ditambahkan"
+                                        "Berhasil menambahkan transaksi"
                                     )
                                 } else {
                                     createPopUp(

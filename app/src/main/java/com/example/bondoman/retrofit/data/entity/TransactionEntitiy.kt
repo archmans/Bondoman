@@ -15,6 +15,6 @@ data class TransactionEntity(
     @ColumnInfo(name = "nama_transaksi") var name: String? = null,
     @ColumnInfo(name = "kategori_transaksi") var category: Category? = null,
     @ColumnInfo(name = "tanggal_transaksi") var date: String? = null,
-    @ColumnInfo(name = "nominal_transaksi") var price: Int? = null,
+    @ColumnInfo(name = "nominal_transaksi") var price: Double? = null,
     @ColumnInfo(name = "lokasi_transaksi") var location: String? = null
 )

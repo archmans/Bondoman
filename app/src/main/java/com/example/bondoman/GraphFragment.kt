@@ -1,9 +1,18 @@
 package com.example.bondoman
 
+import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
+import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
@@ -19,6 +28,23 @@ class GraphFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_grafik, container, false)
         val pieChart: PieChart = view.findViewById(R.id.pieChart)
+
+        val navbar = requireActivity().findViewById<LinearLayout>(R.id.navbar_main)
+        val toolbar = requireActivity().findViewById<RelativeLayout>(R.id.toolbar)
+        navbar.setBackgroundResource(R.drawable.navbar_background)
+        toolbar.setBackgroundColor(
+            Color.parseColor("#000113")
+        )
+        val textView = toolbar.findViewById<TextView>(R.id.toolbar_text)
+        val transactionButton = requireActivity().findViewById<ImageButton>(R.id.transaction_button)
+        val graphButton = requireActivity().findViewById<ImageButton>(R.id.graph_button)
+        val settingButton = requireActivity().findViewById<ImageButton>(R.id.setting_button)
+        textView.text = "Grafik"
+        textView.setTextColor(Color.WHITE)
+        toolbar.findViewById<ImageButton>(R.id.toolbar_back_button).setImageResource(R.drawable.ic_arrow_left_white)
+        transactionButton.isSelected = false
+        graphButton.isSelected = true
+        settingButton.isSelected = false
 
         // Dummy data
         val income = 5000f
@@ -52,5 +78,40 @@ class GraphFragment : Fragment() {
         pieChart.invalidate()
 
         return view
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            val transactionButton = requireActivity().findViewById<ImageButton>(R.id.transaction_button)
+            val graphButton = requireActivity().findViewById<ImageButton>(R.id.graph_button)
+            val settingButton = requireActivity().findViewById<ImageButton>(R.id.setting_button)
+            val scanButton = requireActivity().findViewById<ImageButton>(R.id.scan_button)
+
+            val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_90_deg)
+
+            transactionButton.startAnimation(animation)
+            graphButton.startAnimation(animation)
+            settingButton.startAnimation(animation)
+            scanButton.startAnimation(animation)
+
+            Log.d("ORIENTATION CHANGED", "rotate 90")
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            val transactionButton = requireActivity().findViewById<ImageButton>(R.id.transaction_button)
+            val graphButton = requireActivity().findViewById<ImageButton>(R.id.graph_button)
+            val settingButton = requireActivity().findViewById<ImageButton>(R.id.setting_button)
+            val scanButton = requireActivity().findViewById<ImageButton>(R.id.scan_button)
+
+            val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_270_deg)
+
+            transactionButton.startAnimation(animation)
+            graphButton.startAnimation(animation)
+            settingButton.startAnimation(animation)
+            scanButton.startAnimation(animation)
+
+            Log.d("ORIENTATION CHANGED", "rotate 270")
+
+        }
     }
 }

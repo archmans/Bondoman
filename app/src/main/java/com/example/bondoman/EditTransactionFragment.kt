@@ -1,7 +1,6 @@
 package com.example.bondoman
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -46,12 +45,12 @@ class EditTransactionFragment : Fragment() {
             AlertDialog.Builder(requireContext())
                 .setTitle("Delete Transaction")
                 .setMessage("Are you sure you want to delete this transaction?")
-                .setPositiveButton("Yes") { dialog, which ->
+                .setPositiveButton("Yes") { _, _ ->
                     val transaction = db.transactionDao().getId(id)
                     db.transactionDao().delete(transaction)
                     requireActivity().onBackPressed()
                 }
-                .setNegativeButton("No") { dialog, which -> }
+                .setNegativeButton("No") { _, _ -> }
                 .show()
         }
 
@@ -60,7 +59,7 @@ class EditTransactionFragment : Fragment() {
             val kategori = db.transactionDao().getId(id).category
             val date = db.transactionDao().getId(id).date
             val nama = binding.nameField.text.toString()
-            val nominal = binding.priceField.text.toString().toInt()
+            val nominal = binding.priceField.text.toString().toDouble()
             val lokasi = binding.locationField.text.toString()
 
             val newTransaction = TransactionEntity(

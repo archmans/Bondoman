@@ -3,6 +3,7 @@ package com.example.bondoman
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
@@ -17,11 +18,14 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.bondoman.services.JWTExpiry
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.lifecycleScope
+import com.example.bondoman.retrofit.data.TransactionDB
 import com.example.bondoman.services.ConnectivityObserver
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import com.example.bondoman.services.NetworkSensing
+import org.greenrobot.eventbus.EventBus
 
 class MainActivity : AppCompatActivity() {
     private lateinit var service: Intent
@@ -31,13 +35,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var settingButton: ImageButton
     private lateinit var scanButton: ImageButton
     private lateinit var navController: NavController
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         service = Intent(this, JWTExpiry::class.java)
         startService(service)
         networkSensing = NetworkSensing(this)
+
+        EventBus.getDefault().register(TransactionFragment())
+        Log.d("EventBus", "Registered fragment as subscriber")
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val toolbarButton = findViewById<ImageButton>(R.id.toolbar_back_button)
@@ -131,5 +137,8 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         stopService(service)
+        EventBus.getDefault().unregister(AddTransactionFragment())
+
     }
+
 }

@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,20 +11,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-
         <LinearLayout
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="60dp"
             android:layout_marginEnd="60dp"
             android:layout_marginBottom="40dp"
-            android:background="@android:color/transparent"
             android:orientation="horizontal"
+            android:background="@android:color/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
-
             <LinearLayout
                 android:id="@+id/navbar_main"
                 android:layout_width="wrap_content"
@@ -36,17 +32,14 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/navbar_scanner"
                 app:layout_constraintStart_toStartOf="parent">
-
                 <ImageButton
                     android:id="@+id/transaction_button"
-                    android:clickable="true"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/transaction_button_description"
                     android:src="@drawable/ic_transaksi" />
-
                 <ImageButton
                     android:id="@+id/graph_button"
                     android:layout_width="wrap_content"
@@ -55,7 +48,6 @@
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/graph_button_description"
                     android:src="@drawable/ic_grafik" />
-
                 <ImageButton
                     android:id="@+id/setting_button"
                     android:layout_width="wrap_content"
@@ -65,7 +57,6 @@
                     android:contentDescription="@string/setting_button_description"
                     android:src="@drawable/ic_setting" />
             </LinearLayout>
-
             <LinearLayout
                 android:id="@+id/navbar_scanner"
                 android:layout_width="wrap_content"
@@ -75,7 +66,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/navbar_main">
-
                 <ImageButton
                     android:id="@+id/scan_button"
                     android:layout_width="0dp"
@@ -87,12 +77,4 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="20dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

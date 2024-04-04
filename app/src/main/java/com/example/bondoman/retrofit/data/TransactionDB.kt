@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.bondoman.retrofit.data.dao.TransactionDao
 import com.example.bondoman.retrofit.data.entity.TransactionEntity
 
-@Database(entities = [TransactionEntity::class], version = 2)
+@Database(entities = [TransactionEntity::class], version = 3)
 abstract class TransactionDB : RoomDatabase() {
     abstract fun transactionDao(): TransactionDao
 
@@ -18,6 +18,7 @@ abstract class TransactionDB : RoomDatabase() {
             if (instance==null){
                 instance = Room.databaseBuilder(context, TransactionDB::class.java, "db")
                     .allowMainThreadQueries()
+                    .fallbackToDestructiveMigration()
                     .build()
             }
 

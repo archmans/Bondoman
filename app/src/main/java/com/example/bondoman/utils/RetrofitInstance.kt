@@ -1,6 +1,6 @@
 package com.example.bondoman.utils
 
-import com.example.bondoman.api.ApiInterface
+import com.example.bondoman.appInterface.api.ApiInterface
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

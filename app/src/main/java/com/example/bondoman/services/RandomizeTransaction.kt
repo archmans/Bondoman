@@ -10,18 +10,15 @@
     import androidx.appcompat.app.AppCompatActivity
     import com.example.bondoman.LogoutFragment
     import com.example.bondoman.R
+    import org.greenrobot.eventbus.EventBus
 
     class RandomizeTransaction : BroadcastReceiver() {
-        private var text: String = ""
+        private var transactionName: String = ""
+        private var price: Double = 0.0
         override fun onReceive(context: Context?, intent: Intent?) {
-            text  = intent?.getStringExtra("transactionName").toString()
-
-            Log.d("BroadcastRandomizeTransaction", "Random text: $text")
-
-//            val activity = context as? AppCompatActivity
-//            activity?.runOnUiThread {
-//                val fragment = activity.supportFragmentManager.findFragmentById(R.id.fragment_container) as? LogoutFragment
-//                fragment?.updateEditText(randomText)
-//            }
+            transactionName  = intent?.getStringExtra("transactionName") ?: ""
+            price = intent?.getDoubleExtra("price", 0.0 ) ?: 0.0
+            Log.d("BroadcastRandomizeTransaction", "Random text: $transactionName $price")
+            EventBus.getDefault().post(RandomTransactionEvent(transactionName, price))
         }
     }

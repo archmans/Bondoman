@@ -18,9 +18,14 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
+import com.example.bondoman.services.RandomTransactionEvent
+import com.example.bondoman.services.RandomizeTransaction
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 
-class AddTransactionFragment : Fragment() {
+class AddTransactionFragment : Fragment(){
     private lateinit var binding: FragmentAddTransactionBinding
     private lateinit var geocoder: Geocoder
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -28,10 +33,16 @@ class AddTransactionFragment : Fragment() {
     private var isFetched : Boolean = false
     private lateinit var db: DBViewModel
 
+    private var pendingTransaction: MutableList<Pair<String, Double>> = mutableListOf()
+
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,19 +50,26 @@ class AddTransactionFragment : Fragment() {
         binding = FragmentAddTransactionBinding.inflate(inflater, container, false)
         geocoder = Geocoder(requireContext(), Locale.getDefault())
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        db = ViewModelProvider(requireActivity())[DBViewModel::class.java]
+
+        if (pendingTransaction.isNotEmpty()){
+            pendingTransaction.forEach { pair ->
+                db.addTransaksi(pair.first, "Pengeluaran", pair.second, "Unknown")
+            }
+            pendingTransaction.clear()
+        }
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        db = ViewModelProvider(requireActivity())[DBViewModel::class.java]
 
         val categorySpinner: Spinner = binding.addCategoryField
         val categories = resources.getStringArray(R.array.category_array)
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categories)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         categorySpinner.adapter = adapter
-
 
         if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
             && ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -79,9 +97,9 @@ class AddTransactionFragment : Fragment() {
             Log.d("addTransactionWoi", "Button clicked")
 
 
-            val amount: Int
+            val amount: Double
             try {
-                amount = amountText.toInt()
+                amount = amountText.toDouble()
             } catch (e: NumberFormatException) {
                 Toast.makeText(requireContext(), "Amount must be a valid number", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -100,6 +118,16 @@ class AddTransactionFragment : Fragment() {
             requireActivity().onBackPressed()
         }
 
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        EventBus.getDefault().unregister(this)
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onRandomTransactionReceived(event: com.example.bondoman.services.RandomTransactionEvent) {
+        val transactionName = event.transactionName
+        val price = event.price
+        pendingTransaction.add(Pair(transactionName, price))
     }
 
     private fun fetchLocation(callback: (String) -> Unit) {
