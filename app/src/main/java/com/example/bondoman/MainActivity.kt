@@ -15,14 +15,9 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import com.example.bondoman.services.JWTExpiry    
-import android.widget.ImageButton
-import android.widget.Toast
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.example.bondoman.services.JWTExpiry
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.example.bondoman.services.ConnectivityObserver
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -31,7 +26,6 @@ import com.example.bondoman.services.NetworkSensing
 class MainActivity : AppCompatActivity() {
     private lateinit var service: Intent
     private lateinit var networkSensing: NetworkSensing
-    private lateinit var service: Intent
     private lateinit var transactionButton: ImageButton
     private lateinit var graphButton: ImageButton
     private lateinit var settingButton: ImageButton
