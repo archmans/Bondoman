@@ -40,6 +40,7 @@ class TransactionFragment : Fragment() {
 
         database = TransactionDB.getInstance(requireContext())
 
+
 //        val filter = IntentFilter("itb.bos.bondoman.ACTION_RANDOMIZE_TRANSACTION")
 //        requireContext().registerReceiver(receiver, filter)
 
@@ -67,6 +68,10 @@ class TransactionFragment : Fragment() {
 //        var transactionAdapter = TransactionAdapter(filteredList)
 //        transactionData.adapter = transactionAdapter
 
+        binding.addButton.setOnClickListener {
+            val intent = Intent(requireContext(), ContainerActivity::class.java)
+            startActivity(intent)
+        }
 //        searchBar = binding.searchBar
 //
 //        searchBar.addTextChangedListener(object : TextWatcher {
@@ -110,6 +115,13 @@ class TransactionFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         loadDatas()
+    }
+
+    private fun loadDatas() {
+        listTransaction.clear()
+
+        listTransaction.addAll(database.transactionDao().getAll())
+        adapter.notifyDataSetChanged()
     }
 
     private fun loadDatas() {

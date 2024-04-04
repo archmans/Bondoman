@@ -4,6 +4,18 @@
     <value>
       <entry key="app">
         <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="C:\Users\lalbi\.android\avd\Pixel_3a_API_32.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-04-03T18:27:02.041955500Z" />
           <runningDeviceTargetSelectedWithDropDown>
             <Target>
               <type value="RUNNING_DEVICE_TARGET" />

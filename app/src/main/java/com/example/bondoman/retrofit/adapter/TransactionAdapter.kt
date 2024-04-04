@@ -12,7 +12,17 @@ import com.example.bondoman.ContainerActivity
 import com.example.bondoman.R
 import com.example.bondoman.retrofit.data.entity.TransactionEntity
 
+
 class TransactionAdapter(private val list: ArrayList<TransactionEntity>): RecyclerView.Adapter<TransactionAdapter.ViewHolder>(){
+    private lateinit var transactionDialog: Dialog
+
+    fun setDialog(dialog: Dialog) {
+        this.transactionDialog = dialog
+    }
+
+    interface Dialog{
+        fun onClick(position: Int)
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentData = list[position]
@@ -50,7 +60,7 @@ class TransactionAdapter(private val list: ArrayList<TransactionEntity>): Recycl
             val intent = Intent(holder.itemView.context, ContainerActivity::class.java)
 
             // Optionally, pass data to the AddTransactionActivity
-            intent.putExtra("transactionId", currentData.id)
+            intent.putExtra("id", currentData.id)
 
             // Start the activity
             holder.itemView.context.startActivity(intent)
@@ -58,7 +68,7 @@ class TransactionAdapter(private val list: ArrayList<TransactionEntity>): Recycl
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.row_data,parent,false)
+        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.row_data, parent, false)
         return ViewHolder(view)
     }
 

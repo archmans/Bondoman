@@ -12,16 +12,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/container_edit"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="75dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
     </ImageView>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/delete"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="310dp"
+        tools:layout_editor_absoluteY="6dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="500dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="100dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -37,10 +46,11 @@
             />
 
         <EditText
+            android:id="@+id/nameField"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
-            android:text="Nama Transaksi"
+            android:hint="Masukkan nama transaksi"
             android:textColor="@color/grey"
             android:paddingHorizontal="20dp"
             android:textSize="16sp"
@@ -56,10 +66,11 @@
             />
 
         <EditText
+            android:id="@+id/priceField"
             android:layout_width="match_parent"
             android:layout_marginTop="8dp"
             android:layout_height="48dp"
-            android:text="Nominal"
+            android:hint="Masukkan nominal"
             android:textColor="@color/grey"
             android:paddingHorizontal="20dp"
             android:textSize="16sp"
@@ -75,10 +86,11 @@
             />
 
         <EditText
+            android:id="@+id/locationField"
             android:layout_width="match_parent"
             android:layout_marginTop="8dp"
             android:layout_height="48dp"
-            android:text="Lokasi"
+            android:hint="Masukkan Lokasi"
             android:textColor="@color/grey"
             android:paddingVertical="12dp"
             android:paddingHorizontal="20dp"
@@ -88,6 +100,7 @@
 
 
         <TextView
+            android:id="@+id/categoryField"
             android:layout_width="match_parent"
             android:layout_marginTop="24dp"
             android:layout_height="48dp"
@@ -100,6 +113,7 @@
             />
 
         <TextView
+            android:id="@+id/dateField"
             android:layout_width="match_parent"
             android:layout_marginTop="24dp"
             android:layout_height="48dp"
@@ -112,6 +126,7 @@
             />
 
         <Button
+            android:id="@+id/saveButton"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="24dp"
