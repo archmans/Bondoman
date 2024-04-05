@@ -115,7 +115,6 @@ class TransactionFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        database.close()
     }
 
     override fun onResume() {

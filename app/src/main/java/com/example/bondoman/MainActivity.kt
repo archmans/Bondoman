@@ -36,12 +36,19 @@ class MainActivity : AppCompatActivity() {
     private lateinit var settingButton: ImageButton
     private lateinit var scanButton: ImageButton
     private lateinit var navController: NavController
+    private lateinit var database: TransactionDB
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         service = Intent(this, JWTExpiry::class.java)
         startService(service)
         networkSensing = NetworkSensing(this)
+
+        database = TransactionDB.getInstance(this)
+        if (!database.isOpen) {
+            database.openHelper.writableDatabase
+        }
 
         EventBus.getDefault().register(TransactionFragment())
         Log.d("EventBus", "Registered fragment as subscriber")
@@ -145,6 +152,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        database.close()
         stopService(service)
         EventBus.getDefault().unregister(AddTransactionFragment())
 
