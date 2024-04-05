@@ -9,24 +9,50 @@ import android.content.Intent
 import android.widget.Toast
 import android.annotation.SuppressLint
 import android.util.Log
+import android.view.View
+import android.widget.RelativeLayout
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import com.example.bondoman.models.LoginRequest
+import com.example.bondoman.services.ConnectivityObserver
+import com.example.bondoman.services.NetworkSensing
 import com.example.bondoman.utils.RetrofitInstance
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.json.JSONException
 import org.json.JSONObject
 
 class LoginActivity : AppCompatActivity() {
+    private lateinit var networkSensing: NetworkSensing
     @SuppressLint("CommitPrefEdits")
-//    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
         val buttonLogin = findViewById<Button>(R.id.buttonLogin)
-//        val editTextEmail = findViewById<EditText>(R.id.emailAddress)
-//        val editTextPassword = findViewById<EditText>(R.id.password)
+        val editTextEmail = findViewById<EditText>(R.id.emailAddress)
+        val editTextPassword = findViewById<EditText>(R.id.password)
+        val connectionLost = findViewById<RelativeLayout>(R.id.conn_lost)
+        networkSensing = NetworkSensing(this)
+        networkSensing.observe()
+            .onEach { state ->
+                when (state) {
+                    ConnectivityObserver.NetworkState.CONNECTED -> {
+                        editTextEmail.visibility = View.VISIBLE
+                        editTextPassword.visibility = View.VISIBLE
+                        buttonLogin.visibility = View.VISIBLE
+                        connectionLost.visibility = View.GONE
+                    }
+                    ConnectivityObserver.NetworkState.DISCONNECTED -> {
+                        editTextEmail.visibility = View.GONE
+                        editTextPassword.visibility = View.GONE
+                        buttonLogin.visibility = View.GONE
+                        connectionLost.visibility = View.VISIBLE
+                    }
+                }
+            }
+            .launchIn(lifecycleScope)
 
         buttonLogin.setOnClickListener {
 //            val email = editTextEmail.text.toString()

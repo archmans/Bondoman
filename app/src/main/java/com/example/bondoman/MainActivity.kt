@@ -30,7 +30,6 @@ import org.greenrobot.eventbus.EventBus
 
 class MainActivity : AppCompatActivity() {
     private lateinit var service: Intent
-    private lateinit var networkSensing: NetworkSensing
     private lateinit var transactionButton: ImageButton
     private lateinit var graphButton: ImageButton
     private lateinit var settingButton: ImageButton
@@ -43,7 +42,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         service = Intent(this, JWTExpiry::class.java)
         startService(service)
-        networkSensing = NetworkSensing(this)
 
         database = TransactionDB.getInstance(this)
         if (!database.isOpen) {
@@ -106,27 +104,6 @@ class MainActivity : AppCompatActivity() {
                 navbar.visibility = View.VISIBLE
             }
         }
-        networkSensing.observe()
-            .onEach { state ->
-                when (state) {
-                    ConnectivityObserver.NetworkState.CONNECTED -> {
-                        Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
-                    }
-                    ConnectivityObserver.NetworkState.DISCONNECTED -> {
-                        runOnUiThread {
-                            AlertDialog.Builder(this)
-                                .setTitle("Network Status")
-                                .setMessage("Disconnected")
-                                .setPositiveButton("OK") { dialog, _ ->
-                                    dialog.dismiss()
-                                }
-                                .show()
-                        }
-                    }
-                }
-            }
-            .launchIn(lifecycleScope)
-
     }
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)

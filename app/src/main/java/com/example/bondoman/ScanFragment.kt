@@ -30,6 +30,7 @@ import android.view.Surface
 import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -40,11 +41,16 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.bondoman.services.ConnectivityObserver
+import com.example.bondoman.services.NetworkSensing
 import com.example.bondoman.utils.RetrofitInstance
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -76,6 +82,7 @@ class ScanFragment : Fragment() {
 
     private var job: Job? = null
     private var cameraDevice: CameraDevice? = null
+    private lateinit var networkSensing: NetworkSensing
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -103,6 +110,38 @@ class ScanFragment : Fragment() {
         transactionButton.isSelected = false
         graphButton.isSelected = false
         settingButton.isSelected = false
+
+        val frameLayoutScan = view.findViewById<FrameLayout>(R.id.FrameLayout)
+        val imageConn = view.findViewById<ImageView>(R.id.image_conn)
+        val textConn = view.findViewById<TextView>(R.id.title_conn)
+        val descConn = view.findViewById<TextView>(R.id.message_conn)
+        val scanFragment = view.findViewById<RelativeLayout>(R.id.scan_fragment)
+
+        networkSensing = NetworkSensing(requireContext())
+        networkSensing.observe()
+            .onEach { state ->
+                when (state) {
+                    ConnectivityObserver.NetworkState.CONNECTED -> {
+                        imageConn.visibility = View.GONE
+                        textConn.visibility = View.GONE
+                        descConn.visibility = View.GONE
+                        frameLayoutScan.visibility = View.VISIBLE
+                        galleryButton.visibility = View.VISIBLE
+                        captureButton.visibility = View.VISIBLE
+                        scanFragment.setBackgroundColor(Color.parseColor("#1B1A55"))
+                    }
+                    ConnectivityObserver.NetworkState.DISCONNECTED -> {
+                        imageConn.visibility = View.VISIBLE
+                        textConn.visibility = View.VISIBLE
+                        descConn.visibility = View.VISIBLE
+                        frameLayoutScan.visibility = View.GONE
+                        galleryButton.visibility = View.GONE
+                        captureButton.visibility = View.GONE
+                        scanFragment.setBackgroundColor(resources.getColor(R.color.white))
+                    }
+                }
+            }
+            .launchIn(lifecycleScope)
 
         return view
     }
