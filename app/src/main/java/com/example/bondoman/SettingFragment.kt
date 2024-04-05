@@ -1,6 +1,7 @@
 package com.example.bondoman
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.graphics.Color
@@ -20,6 +21,9 @@ import com.example.bondoman.databinding.FragmentSettingBinding
 import com.example.bondoman.helper.Xls
 import com.example.bondoman.retrofit.data.TransactionDB
 import com.example.bondoman.services.RandomizeTransaction
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlin.random.Random
 
 class SettingFragment: Fragment() {
@@ -88,14 +92,21 @@ class SettingFragment: Fragment() {
     }
 
     private fun sendEmail() {
+        val sharedPreferences =
+            requireActivity().getSharedPreferences(
+                "sharedPrefs",
+                Context.MODE_PRIVATE
+            )
+        val email = sharedPreferences.getString("EMAIL", "") ?: ""
+
         // Create an intent to send an email
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = "message/rfc822" // Email MIME type
-
+        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         // Fill in the email details (optional)
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("bintanghijriawan433@gmail.com"))
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Subject")
-        intent.putExtra(Intent.EXTRA_TEXT, "Body of the email")
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Daftar Transaksi")
+        intent.putExtra(Intent.EXTRA_TEXT, "Daftar Transaksi $currentDate")
 
         try {
             // Start the email activity
