@@ -1,16 +1,22 @@
 package com.example.bondoman.helper
 
 import android.content.Context
-import com.example.bondoman.models.SqlTransaction
+import com.example.bondoman.retrofit.data.entity.TransactionEntity
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.File
 import java.io.FileOutputStream
+import java.time.format.DateTimeFormatter
 
 class Xls {
     companion object {
         // Dummy Transaction class for testing
-        fun saveXls(context: Context, transactionList: List<SqlTransaction>, fileFormat: String): String {
+        fun saveXls(
+            context: Context,
+            transactionList: List<TransactionEntity>,
+            fileFormat: String,
+            directory: File
+        ): String {
             // Create a new XSSFWorkbook or HSSFWorkbook based on the file format
             val workbook = if (fileFormat == "xlsx") XSSFWorkbook() else HSSFWorkbook()
 
@@ -26,18 +32,23 @@ class Xls {
             }
 
             // Populate data rows
+            // Populate data rows
             for ((index, transaction) in transactionList.withIndex()) {
                 val row = sheet.createRow(index + 1)
                 row.createCell(0).setCellValue(transaction.name ?: "") // Handle null name
-                row.createCell(1).setCellValue(transaction.date ?: "") // Handle null date
-                row.createCell(2).setCellValue(transaction.category ?: "") // Handle null category
+
+                // Format the date and set it to the cell
+                val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                row.createCell(1).setCellValue(transaction.date?.format(dateFormat) ?: "") // Handle null date
+
+                row.createCell(2).setCellValue(transaction.category.toString()) // Handle null category
                 row.createCell(3).setCellValue(transaction.price?.toDouble() ?: 0.0) // Handle null price
                 row.createCell(4).setCellValue(transaction.location ?: "") // Handle null location
             }
 
             // Write the workbook to a file
             val fileName = "transaction_list.$fileFormat"
-            val file = File(context.filesDir, fileName)
+            val file = File(directory, "your_file_name.$fileFormat")
             FileOutputStream(file).use {
                 workbook.write(it)
             }
@@ -45,5 +56,4 @@ class Xls {
             return file.absolutePath
         }
     }
-
 }

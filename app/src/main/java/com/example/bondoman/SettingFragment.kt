@@ -18,7 +18,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.bondoman.databinding.FragmentSettingBinding
 import com.example.bondoman.helper.Xls
-import com.example.bondoman.models.SqlTransaction
 import com.example.bondoman.retrofit.data.TransactionDB
 import com.example.bondoman.services.RandomizeTransaction
 import kotlin.random.Random
@@ -62,7 +61,7 @@ class SettingFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.saveButton.setOnClickListener{
-
+            saveToXls()
         }
         binding.sendEmailButton.setOnClickListener {
             sendEmail()
@@ -122,5 +121,21 @@ class SettingFragment: Fragment() {
         editor.apply()
     }
 
+    private fun saveToXls() {
+        val items = arrayOf("xlsx", "xls")
+        AlertDialog.Builder(requireContext())
+            .setTitle("Choose file format")
+            .setItems(items) { dialog, which ->
+                val transactions = database.transactionDao().getAll()
+                val internalStorageDir = requireContext().getFilesDir()
+                savedFilePath = Xls.saveXls(requireContext(), transactions, items[which], internalStorageDir)
+                if (savedFilePath != null) {
+                    Toast.makeText(requireContext(), "File saved to $savedFilePath", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Failed to save file", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .show()
+    }
 
 }
