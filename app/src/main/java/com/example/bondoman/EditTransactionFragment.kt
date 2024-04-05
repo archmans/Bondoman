@@ -1,11 +1,16 @@
 package com.example.bondoman
 
 import android.app.AlertDialog
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.example.bondoman.AddTransactionFragment.Companion.LOCATION_PERMISSION_REQUEST_CODE
 import com.example.bondoman.databinding.FragmentEditTransactionBinding
 import com.example.bondoman.retrofit.adapter.TransactionAdapter
 import com.example.bondoman.retrofit.data.TransactionDB
@@ -54,6 +59,19 @@ class EditTransactionFragment : Fragment() {
                 .show()
         }
 
+        if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            && ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            Log.e("fetchLocation", "Both fine and coarse location permissions granted")
+            fetchLocation { fetchedAddress ->
+                binding.locationField.setText(fetchedAddress)
+            }
+        } else {
+            Log.e("fetchLocation", "Requesting permissions for fine and coarse location")
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(
+                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+        }
+
         binding.saveButton.setOnClickListener {
             db = TransactionDB.getInstance(requireContext())
             val kategori = db.transactionDao().getId(id).category
@@ -85,5 +103,32 @@ class EditTransactionFragment : Fragment() {
         binding.dateField.setText(transaction.date)
         binding.categoryField.setText(transaction.category.toString())
     }
-
+    private fun fetchLocation(callback: (String) -> Unit) {
+        var address = "Unknown"
+    }
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            LOCATION_PERMISSION_REQUEST_CODE -> {
+                // If request is cancelled, the result arrays are empty.
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    fetchLocation { fetchedAddress ->
+                        binding.locationField.setText(fetchedAddress)
+                    }
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Log.e("fetchLocation", "Location permissions denied")
+                }
+                return
+            }
+            // Add other 'when' lines to check for other
+            // permissions this app might request.
+            else -> {
+                // Ignore all other requests.
+            }
+        }
+    }
 }

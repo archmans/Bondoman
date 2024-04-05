@@ -21,7 +21,7 @@ class DBViewModel(application: Application) : AndroidViewModel(application) {
     fun addTransaksi(name: String, category: String, price: Double, location: String = "") {
         viewModelScope.launch {
             val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-            val tempLocation = location
+            var tempLocation = location
             val newTransaction = TransactionEntity(
                 name = name,
                 category = Category.valueOf(category),
@@ -57,6 +57,7 @@ class DBViewModel(application: Application) : AndroidViewModel(application) {
             data.add(0, dbData[0])
             data.add(1, dbData[1])
         }
+
         return data
     }
 }

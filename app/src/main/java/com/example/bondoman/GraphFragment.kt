@@ -30,9 +30,10 @@ class GraphFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         database = TransactionDB.getInstance(requireContext())
-        if (!database.isOpen){
+        if (!database.isOpen) {
             database.openHelper.writableDatabase
         }
+
         val view = inflater.inflate(R.layout.fragment_grafik, container, false)
         val pieChart: PieChart = view.findViewById(R.id.pieChart)
         db = ViewModelProvider(requireActivity())[DBViewModel::class.java]

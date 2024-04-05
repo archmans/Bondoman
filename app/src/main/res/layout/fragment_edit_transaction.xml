@@ -24,8 +24,8 @@
         android:layout_height="wrap_content"
         android:src="@drawable/delete"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="310dp"
-        tools:layout_editor_absoluteY="6dp" />
+        tools:layout_editor_absoluteX="300dp"
+        tools:layout_editor_absoluteY="5dp" />
 
     <LinearLayout
         android:layout_width="match_parent"

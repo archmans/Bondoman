@@ -36,7 +36,7 @@ class AddTransactionFragment : Fragment(){
     private var pendingTransaction: MutableList<Pair<String, Double>> = mutableListOf()
 
     companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
+        const val LOCATION_PERMISSION_REQUEST_CODE = 1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -167,18 +167,28 @@ class AddTransactionFragment : Fragment(){
             "Unknown Location"
         }
     }
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.e("fetchLocation", "Location permission granted")
-                fetchLocation { fetchedAddress ->
-                    address = fetchedAddress
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            LOCATION_PERMISSION_REQUEST_CODE -> {
+                // If request is cancelled, the result arrays are empty.
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    fetchLocation { fetchedAddress ->
+                        address = fetchedAddress
+                    }
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Log.e("fetchLocation", "Location permissions denied")
                 }
-                isFetched = true
-            } else {
-                Log.e("fetchLocation", "Location permission denied")
-                Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show()
+                return
+            }
+            // Add other 'when' lines to check for other
+            // permissions this app might request.
+            else -> {
+                // Ignore all other requests.
             }
         }
     }

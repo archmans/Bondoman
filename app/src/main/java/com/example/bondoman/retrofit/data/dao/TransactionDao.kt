@@ -30,6 +30,8 @@ interface TransactionDao {
     fun update(transaction: TransactionEntity)
     @Query("SELECT * FROM transactionentity WHERE id = :id")
     fun getId(id: Int): TransactionEntity
+    @Query("SELECT kategori_transaksi as category, SUM(nominal_transaksi) as amount FROM transactionentity GROUP BY kategori_transaksi")
+    fun sumPriceByCategory(): List<GraphData>
 
     @Query("SELECT 'kategori_transaksi' as 'category', 'nominal_transaksi' as 'amount' FROM transactionentity GROUP BY 'kategori_transaksi'")
     fun sumPriceByCategory(): List<GraphData>
