@@ -14,6 +14,8 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.bondoman.retrofit.data.TransactionDB
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
@@ -21,13 +23,19 @@ import com.github.mikephil.charting.data.PieEntry
 
 class GraphFragment : Fragment() {
 
+    private lateinit var db: DBViewModel
+    private lateinit var database: TransactionDB
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        database = TransactionDB.getInstance(requireContext())
+        if (!database.isOpen){
+            database.openHelper.writableDatabase
+        }
         val view = inflater.inflate(R.layout.fragment_grafik, container, false)
         val pieChart: PieChart = view.findViewById(R.id.pieChart)
+        db = ViewModelProvider(requireActivity())[DBViewModel::class.java]
 
         val navbar = requireActivity().findViewById<LinearLayout>(R.id.navbar_main)
         val toolbar = requireActivity().findViewById<RelativeLayout>(R.id.toolbar)
@@ -47,12 +55,12 @@ class GraphFragment : Fragment() {
         settingButton.isSelected = false
 
         // Dummy data
-        val income = 5000f
-        val outcome = 3000f
+        val graphData = db.getGraphData()
+        Log.d("DATA", graphData.toString())
 
         val entries = ArrayList<PieEntry>()
-        entries.add(PieEntry(income, "Income"))
-        entries.add(PieEntry(outcome, "Outcome"))
+        entries.add(PieEntry(graphData[0].amount!!.toFloat(), graphData[0].category.toString()))
+        entries.add(PieEntry(graphData[1].amount!!.toFloat(), graphData[1].category.toString()))
 
         val dataSet = PieDataSet(entries, "Transaction Summary")
 
@@ -80,38 +88,5 @@ class GraphFragment : Fragment() {
         return view
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
 
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            val transactionButton = requireActivity().findViewById<ImageButton>(R.id.transaction_button)
-            val graphButton = requireActivity().findViewById<ImageButton>(R.id.graph_button)
-            val settingButton = requireActivity().findViewById<ImageButton>(R.id.setting_button)
-            val scanButton = requireActivity().findViewById<ImageButton>(R.id.scan_button)
-
-            val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_90_deg)
-
-            transactionButton.startAnimation(animation)
-            graphButton.startAnimation(animation)
-            settingButton.startAnimation(animation)
-            scanButton.startAnimation(animation)
-
-            Log.d("ORIENTATION CHANGED", "rotate 90")
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            val transactionButton = requireActivity().findViewById<ImageButton>(R.id.transaction_button)
-            val graphButton = requireActivity().findViewById<ImageButton>(R.id.graph_button)
-            val settingButton = requireActivity().findViewById<ImageButton>(R.id.setting_button)
-            val scanButton = requireActivity().findViewById<ImageButton>(R.id.scan_button)
-
-            val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.rotate_270_deg)
-
-            transactionButton.startAnimation(animation)
-            graphButton.startAnimation(animation)
-            settingButton.startAnimation(animation)
-            scanButton.startAnimation(animation)
-
-            Log.d("ORIENTATION CHANGED", "rotate 270")
-
-        }
-    }
 }

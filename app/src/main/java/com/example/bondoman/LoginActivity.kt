@@ -43,6 +43,7 @@ class LoginActivity : AppCompatActivity() {
                         val editor = sharedPreferences.edit()
                         editor.apply {
                             putString("TOKEN", token)
+                            putString("EMAIL", email)
                         }.apply()
                         val intent = Intent(this@LoginActivity, MainActivity::class.java)
                         startActivity(intent)

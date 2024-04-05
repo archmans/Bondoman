@@ -63,8 +63,6 @@ class TransactionFragment : Fragment() {
         graphButton.isSelected = false
         settingButton.isSelected = false
 
-
-
         return binding.root
     }
 
@@ -72,18 +70,6 @@ class TransactionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = TransactionAdapter(listTransaction)
-
-        transactionData = binding.itemTransaction
-        transactionData.adapter = adapter
-        transactionData.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        transactionData.addItemDecoration(
-            DividerItemDecoration(
-                requireContext(),
-                RecyclerView.VERTICAL
-            )
-        )
-
         db = ViewModelProvider(requireActivity())[DBViewModel::class.java]
 
         Log.d("PENDING LIST NOT EMPTY?", pendingTransaction.isNotEmpty().toString())
@@ -97,6 +83,16 @@ class TransactionFragment : Fragment() {
             }
             pendingTransaction.clear()
         }
+        transactionData = binding.itemTransaction
+        transactionData.adapter = adapter
+        transactionData.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        transactionData.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                RecyclerView.VERTICAL
+            )
+        )
 
         binding.addButton.setOnClickListener {
             val intent = Intent(requireContext(), ContainerActivity::class.java)
