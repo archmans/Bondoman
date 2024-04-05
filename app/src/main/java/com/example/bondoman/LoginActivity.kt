@@ -55,10 +55,10 @@ class LoginActivity : AppCompatActivity() {
             .launchIn(lifecycleScope)
 
         buttonLogin.setOnClickListener {
-//            val email = editTextEmail.text.toString()
-//            val password = editTextPassword.text.toString()
-            val email = "13521003@std.stei.itb.ac.id"
-            val password = "password_13521003"
+            val email = editTextEmail.text.toString()
+            val password = editTextPassword.text.toString()
+//            val email = "13521003@std.stei.itb.ac.id"
+//            val password = "password_13521003"
 
             CoroutineScope(Dispatchers.IO).launch {
                 try {
