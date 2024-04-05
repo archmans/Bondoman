@@ -3,14 +3,14 @@ package com.example.bondoman.models
 import android.os.Parcel
 import android.os.Parcelable
 
-data class SqlTransaction(var id: Int=0, var name: String? = null, var category: String? =null, var date: String? =null, var price: Int? = null, var location : String? =null) :
+data class SqlTransaction(var id: Int=0, var name: String? = null, var category: String? =null, var date: String? =null, var price: Double? = null, var location : String? =null) :
     Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
-        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Double,
         parcel.readString()
     )
 

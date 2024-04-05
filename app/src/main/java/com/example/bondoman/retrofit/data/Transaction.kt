@@ -3,13 +3,13 @@ package com.example.bondoman.retrofit.data
 import android.os.Parcel
 import android.os.Parcelable
 
-data class Transaction(val id: Int?,val name: String?, val date: String?, val category: String?, val price: Int?, val location: String?) : Parcelable {
+data class Transaction(val id: Int?,val name: String?, val date: String?, val category: String?, val price: Double?, val location: String?) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readValue(Int::class.java.classLoader) as? Int,
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
-        parcel.readValue(Int::class.java.classLoader) as? Int,
+        parcel.readValue(Int::class.java.classLoader) as? Double,
         parcel.readString()
     )
 
