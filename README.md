@@ -30,6 +30,6 @@ Aplikasi ini merupakan aplikasi mobile android yang digunakan untuk mencatat tra
 ## Pembagian Kerja
 | NIM      | NAMA                   | TASK                                                             |Total Jam                           |
 |----------|------------------------|------------------------------------------------------------------|------------------------------------|
-| 13521003 |  Bintang Hijriawan Jachja   |Login, Logout, Background Service, Randomize Transaction, Grafik, Network Sensing     |20 jam persiapan + 40 jam pengerjaan |
-| 13521010 | Muhamad Salman Hakim Alfarisi       |Scan, Email Intent, Navbar dan Header, Randomize Transaction, Grafik, Network Sensing                |20 jam persiapan + 40 jam pengerjaan |
+| 13521003 |  Bintang Hijriawan Jachja   |Scan, Email Intent, Navbar dan Header, Randomize Transaction, Grafik, Network Sensing     |20 jam persiapan + 40 jam pengerjaan |
+| 13521010 | Muhamad Salman Hakim Alfarisi       |Login, Logout, Background Service, Randomize Transaction, Grafik, Network Sensing                |20 jam persiapan + 40 jam pengerjaan |
 | 13521016 | Laila Bilbina Khoiru Nisa           |CRUD Transaksi, List Transksi, Save xls dan xlsx, Randomize Transaction, Grafik, Network Sensing       |20 jam persiapan + 40 jam pengerjaan |
