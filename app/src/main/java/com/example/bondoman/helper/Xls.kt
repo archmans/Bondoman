@@ -47,8 +47,8 @@ class Xls {
             }
 
             // Write the workbook to a file
-            val fileName = "transaction_list.$fileFormat"
-            val file = File(directory, "your_file_name.$fileFormat")
+            val uniqueFileName = "transaction_list_${System.currentTimeMillis()}.$fileFormat"
+            val file = File(directory, uniqueFileName)
             FileOutputStream(file).use {
                 workbook.write(it)
             }

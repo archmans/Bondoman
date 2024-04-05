@@ -18,6 +18,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.bondoman.services.JWTExpiry
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.lifecycleScope
 import com.example.bondoman.retrofit.data.TransactionDB
@@ -105,7 +106,15 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show()
                     }
                     ConnectivityObserver.NetworkState.DISCONNECTED -> {
-                        Toast.makeText(this, "Disconnected", Toast.LENGTH_SHORT).show()
+                        runOnUiThread {
+                            AlertDialog.Builder(this)
+                                .setTitle("Network Status")
+                                .setMessage("Disconnected")
+                                .setPositiveButton("OK") { dialog, _ ->
+                                    dialog.dismiss()
+                                }
+                                .show()
+                        }
                     }
                 }
             }
