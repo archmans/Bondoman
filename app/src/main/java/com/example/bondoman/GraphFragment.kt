@@ -14,6 +14,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.bondoman.retrofit.data.TransactionDB
 import com.github.mikephil.charting.charts.PieChart
@@ -59,32 +60,34 @@ class GraphFragment : Fragment() {
         val graphData = db.getGraphData()
         Log.d("DATA", graphData.toString())
 
-        val entries = ArrayList<PieEntry>()
-        entries.add(PieEntry(graphData[0].amount!!.toFloat(), graphData[0].category.toString()))
-        entries.add(PieEntry(graphData[1].amount!!.toFloat(), graphData[1].category.toString()))
+        db.getGraphData().observe(viewLifecycleOwner, Observer { graphData ->
+            val entries = ArrayList<PieEntry>()
+            for (data in graphData) {
+                entries.add(PieEntry(data.amount!!.toFloat(), data.category.toString()))
+            }
 
-        val dataSet = PieDataSet(entries, "Transaction Summary")
+            val dataSet = PieDataSet(entries, "Transaction Summary")
+            val colors = ArrayList<Int>()
+            colors.add(resources.getColor(R.color.colorIncome))
+            colors.add(resources.getColor(R.color.colorOutcome))
+            dataSet.colors = colors
+            dataSet.valueTextSize = 24f
+            dataSet.valueTextColor = resources.getColor(R.color.text_graph)
 
-        val colors = ArrayList<Int>()
-        colors.add(resources.getColor(R.color.colorIncome))
-        colors.add(resources.getColor(R.color.colorOutcome))
-        dataSet.colors = colors
-        dataSet.valueTextSize = 24f
-        dataSet.valueTextColor = resources.getColor(R.color.text_graph)
+            val data = PieData(dataSet)
 
+            pieChart.data = data
 
-        val data = PieData(dataSet)
+            pieChart.description.isEnabled = false
 
-        pieChart.data = data
+            pieChart.setHoleColor(android.R.color.transparent)
 
-        pieChart.description.isEnabled = false
+            val legend = pieChart.legend
+            legend.isEnabled = false
 
-        pieChart.setHoleColor(android.R.color.transparent)
+            pieChart.invalidate()
+        })
 
-        val legend = pieChart.legend
-        legend.isEnabled = false
-
-        pieChart.invalidate()
 
         return view
     }
