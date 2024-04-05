@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,12 +16,15 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.bondoman.databinding.FragmentSettingBinding
 import com.example.bondoman.helper.Xls
 import com.example.bondoman.retrofit.data.TransactionDB
 import com.example.bondoman.services.RandomizeTransaction
+import com.github.mikephil.charting.BuildConfig
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -92,29 +96,44 @@ class SettingFragment: Fragment() {
     }
 
     private fun sendEmail() {
-        val sharedPreferences =
-            requireActivity().getSharedPreferences(
-                "sharedPrefs",
-                Context.MODE_PRIVATE
-            )
-        val email = sharedPreferences.getString("EMAIL", "") ?: ""
+        val items = arrayOf("xlsx", "xls")
+        var path: String = ""
+        AlertDialog.Builder(requireContext())
+            .setTitle("Choose file format")
+            .setItems(items) { dialog, which ->
+                path = saveToXls(which)
+                val sharedPreferences =
+                    requireActivity().getSharedPreferences(
+                        "sharedPrefs",
+                        Context.MODE_PRIVATE
+                    )
+                val email = sharedPreferences.getString("EMAIL", "") ?: ""
+                val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+                    putExtra(Intent.EXTRA_SUBJECT, "Daftar Transaksi")
+                    putExtra(Intent.EXTRA_TEXT, "Daftar Transaksi $currentDate")
+                    type = "message/rfc822" // Email MIME type
 
-        // Create an intent to send an email
-        val intent = Intent(Intent.ACTION_SEND)
-        intent.type = "message/rfc822" // Email MIME type
-        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-        // Fill in the email details (optional)
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Daftar Transaksi")
-        intent.putExtra(Intent.EXTRA_TEXT, "Daftar Transaksi $currentDate")
+                    val file = File(path)
+                    if (file.exists()) {
+                        val uri: Uri = FileProvider.getUriForFile(
+                            requireContext(),
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            file
+                        )
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                    }
+                }
+                try {
+                    startActivity(Intent.createChooser(intent, "Send Email"))
+                } catch (e: ActivityNotFoundException) {
+                    Toast.makeText(activity, "No email app found", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .show()
 
-        try {
-            // Start the email activity
-            startActivity(Intent.createChooser(intent, "Send Email"))
-        } catch (e: ActivityNotFoundException) {
-            // Handle errors if no email client is installed
-            Toast.makeText(activity, "No email app found", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun logout() {
@@ -132,21 +151,53 @@ class SettingFragment: Fragment() {
         editor.apply()
     }
 
-    private fun saveToXls() {
+    private fun saveToXls(format: Int = -1): String {
         val items = arrayOf("xlsx", "xls")
-        AlertDialog.Builder(requireContext())
-            .setTitle("Choose file format")
-            .setItems(items) { dialog, which ->
-                val transactions = database.transactionDao().getAll()
-                val internalStorageDir = requireContext().getFilesDir()
-                savedFilePath = Xls.saveXls(requireContext(), transactions, items[which], internalStorageDir)
-                if (savedFilePath != null) {
-                    Toast.makeText(requireContext(), "File saved to $savedFilePath", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(requireContext(), "Failed to save file", Toast.LENGTH_SHORT).show()
+        if (format==-1) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Choose file format")
+                .setItems(items) { dialog, which ->
+                    val transactions = database.transactionDao().getAll()
+                    val internalStorageDir = requireContext().getFilesDir()
+                    savedFilePath = Xls.saveXls(
+                        requireContext(),
+                        transactions,
+                        items[which],
+                        internalStorageDir
+                    )
+                    if (savedFilePath != null) {
+                        Toast.makeText(
+                            requireContext(),
+                            "File saved to $savedFilePath",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(requireContext(), "Failed to save file", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
+                .show()
+        } else {
+            val transactions = database.transactionDao().getAll()
+            val internalStorageDir = requireContext().getFilesDir()
+            savedFilePath = Xls.saveXls(
+                requireContext(),
+                transactions,
+                items[format],
+                internalStorageDir
+            )
+            if (savedFilePath != null) {
+                Toast.makeText(
+                    requireContext(),
+                    "File saved to $savedFilePath",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(requireContext(), "Failed to save file", Toast.LENGTH_SHORT)
+                    .show()
             }
-            .show()
+        }
+        return savedFilePath?.toString() ?: ""
     }
 
 }
