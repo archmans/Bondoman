@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scan_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="#1B1A55">
+    <ImageView
+        android:id="@+id/image_conn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/rainbow_off" />
+
+    <TextView
+        android:id="@+id/title_conn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image_conn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Connection Lost"
+        android:textAppearance="?attr/textAppearanceHeadline6" />
+
+    <TextView
+        android:id="@+id/message_conn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_conn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="Please check your internet connection and try again."
+        android:textAppearance="?attr/textAppearanceBody2" />
+
+    <FrameLayout
+        android:id="@+id/FrameLayout"
+        android:layout_width="355dp"
+        android:layout_height="435dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="200dp"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/effect_rounded_edge">
+        <TextureView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:id="@+id/textureView"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/selected_image_description"
+            android:id="@+id/imageView"
+            android:visibility="gone"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/effect_rounded_edge"/>
+    </FrameLayout>
+
+    <ImageButton
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:contentDescription="@string/image_button_description"
+        android:background="@drawable/ic_image_background"
+        android:src="@drawable/ic_image"
+        android:id="@+id/galleryButton"
+        android:layout_alignBottom="@id/FrameLayout"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="-130dp"
+        android:layout_marginStart="100dp"/>
+    <ImageButton
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:contentDescription="@string/scan_button_description"
+        android:background="@drawable/ic_scanner_background"
+        android:src="@drawable/ic_scanner_black"
+        android:id="@+id/captureButton"
+        android:layout_alignBottom="@id/FrameLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="-130dp"
+        android:layout_marginEnd="100dp"/>
+
+    <ImageButton
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:contentDescription="@string/rescan_button_description"
+        android:background="@drawable/ic_image_background"
+        android:src="@drawable/ic_scanner_black"
+        android:id="@+id/recaptureButton"
+        android:layout_alignBottom="@id/FrameLayout"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="-130dp"
+        android:layout_marginStart="100dp"
+        android:visibility="invisible"/>
+    <ImageButton
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:contentDescription="@string/confirm_button_description"
+        android:background="@drawable/ic_image_background"
+        android:src="@drawable/ic_confirm"
+        android:id="@+id/confirmButton"
+        android:layout_alignBottom="@id/FrameLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="-130dp"
+        android:layout_marginEnd="100dp"
+        android:visibility="invisible"/>
+
+</RelativeLayout>
+<!--android:id="@+id/scan_conn_lost"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="match_parent"-->
+<!--android:gravity="center"-->
+<!--android:padding="16dp">-->

@@ -47,7 +47,7 @@ class JWTExpiry : Service() {
                         Log.d("JWTExpiry", "Hit API, time to expiry: $timeToExpiry")
                         val delay = timeToExpiry * 1000
                         if (source == "splash") {
-                            redirectToMain()
+                            redirectToTransaction()
                             break
                         } else if (source == "main") {
                             delay(delay)
@@ -70,10 +70,16 @@ class JWTExpiry : Service() {
         }
     }
 
-    private fun redirectToMain() {
-        val mainIntent = Intent(this, MainActivity::class.java)
-        mainIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(mainIntent)
+//    private fun redirectToMain() {
+//        val mainIntent = Intent(this, MainActivity::class.java)
+//        mainIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//        startActivity(mainIntent)
+//    }
+
+    private fun redirectToTransaction() {
+        val transactionIntent = Intent(this, MainActivity::class.java)
+        transactionIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(transactionIntent)
     }
 
     private fun getTokenFromSharedPreferences(): String {
